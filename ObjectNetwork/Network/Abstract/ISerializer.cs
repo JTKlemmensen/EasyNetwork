@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace ObjectNetwork.Network.Abstract
 {
     public interface ISerializer
     {
