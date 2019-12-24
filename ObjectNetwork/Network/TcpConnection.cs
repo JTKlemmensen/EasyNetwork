@@ -5,12 +5,12 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ObjectNetwork.Network
 {
     public class TcpConnection : IConnection
     {
-        protected static int DefaultPort = 25000;
         private GetSocket getSocket;
         private Socket socket;
         private BinaryWriter writer;
@@ -45,12 +45,13 @@ namespace ObjectNetwork.Network
             try
             {
                 socket = getSocket();
-                OnConnected?.Invoke();
+
                 NetworkStream stream = new NetworkStream(socket);
                 stream.ReadTimeout = 100;
                 using (BinaryReader reader = new BinaryReader(stream))
                 using (writer = new BinaryWriter(stream))
                 {
+                    Task.Run(() => OnConnected?.Invoke());
                     while (!stop)
                         try
                         {
@@ -74,7 +75,7 @@ namespace ObjectNetwork.Network
         public void Start()
         {
             stop = false;
-            new Thread(Run).Start();
+            Task.Run(Run);
         }
     }
 
