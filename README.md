@@ -52,7 +52,7 @@ connection.Start();
 IConnectionListener listener = ConnectionBuilder.CreateServer(25000);
 listener.OnInboundConnection += (connection) => 
 {
-    connection.AddCommandHandler(new ExampleCommandHandler);
+    connection.AddCommandHandler(new ExampleCommandHandler());
     connection.Start();
 };
 ```
