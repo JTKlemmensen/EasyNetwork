@@ -11,24 +11,28 @@ When working with Socket code directly or most other network libraries, code can
 ```csharp
 public class ExampleCommandHandler
 {
+    //1. This method will be called when a connection has succesfully been established. 
     [Connect]
     public void OnConnect(ObjectConnection connection)
     {
         connection.SendObject(new MessageObject{Content="Hello World!"});
     }
     
+    //2. This method will be called when the connection no longer listens for incomming messages.
     [Disconnect]
     public void OnDisconnect(ObjectConnection connection)
     {
-    
+        // some logic
     }
     
+    //3. This method will be called when a MessageObject is received from the other part of the connection
     [Command]
     public void OnMessageReceived(ObjectConnection connection, MessageObject object)
     {
-    
+        connection.Stop();
     }
     
+    //4. This method will be called when a PlayerJoinedObject is received from the other part of the connection
     [Command]
     public void OnPlayerJoined(PlayerJoinedObject object)
     {
