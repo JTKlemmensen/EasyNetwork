@@ -1,0 +1,16 @@
+﻿using ObjectNetwork.Network.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ObjectNetwork.Network
+{
+    public class DefaultDataFormatters : IDataFormatters
+    {
+        public ISerializer Serializer { get; } = new ZeroFormatterSerializer();
+
+        public ISymmetricCipher SymmetricCipher { get; } = new AESSymmetricCipher();
+
+        public IAsymmetricCipher AsymmetricCipher => new RSAAsymmetricCipher();
+    }
+}
