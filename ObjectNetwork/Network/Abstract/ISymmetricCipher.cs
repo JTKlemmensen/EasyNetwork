@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ObjectNetwork.Network.Abstract
 {
+    /// <summary>
+    /// Cipher that encrypts and decrypts data symmetrically.
+    /// </summary>
     public interface ISymmetricCipher
     {
         /// <summary>
