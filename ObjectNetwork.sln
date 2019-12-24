@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectNetwork", "ObjectNetwork\ObjectNetwork.csproj", "{48B463F6-15CD-4ED6-ACFB-600C2212BCF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectNetwork", "ObjectNetwork\ObjectNetwork.csproj", "{48B463F6-15CD-4ED6-ACFB-600C2212BCF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectNetwork.Test", "ObjectNetwork.Test\ObjectNetwork.Test.csproj", "{AA9AAC5F-DBAC-4614-8039-93E36718D982}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectNetwork.Test", "ObjectNetwork.Test\ObjectNetwork.Test.csproj", "{36074323-9D1F-4667-BD47-3FFB57DCC041}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{48B463F6-15CD-4ED6-ACFB-600C2212BCF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48B463F6-15CD-4ED6-ACFB-600C2212BCF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48B463F6-15CD-4ED6-ACFB-600C2212BCF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA9AAC5F-DBAC-4614-8039-93E36718D982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA9AAC5F-DBAC-4614-8039-93E36718D982}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA9AAC5F-DBAC-4614-8039-93E36718D982}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA9AAC5F-DBAC-4614-8039-93E36718D982}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36074323-9D1F-4667-BD47-3FFB57DCC041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36074323-9D1F-4667-BD47-3FFB57DCC041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36074323-9D1F-4667-BD47-3FFB57DCC041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36074323-9D1F-4667-BD47-3FFB57DCC041}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
