@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace ObjectNetwork.Network.Formatters
 {
     public class ZeroFormatterSerializer : ISerializer
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace ObjectNetwork.Network.Formatters
 {
     public class RSAAsymmetricCipher : IAsymmetricCipher
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace ObjectNetwork.Network.Formatters
 {
     public class AESSymmetricCipher : ISymmetricCipher
     {
