@@ -21,8 +21,11 @@ namespace ObjectNetwork.Test
 
             var secureClient = new SecureClientConnection(mockConnection.Object, mockAsymmetric.Object, mockSymmetric.Object);
             secureClient.Start();
+            bool dataReceivedHasBeenCalled = false;
+            secureClient.OnDataReceived += (data) => { dataReceivedHasBeenCalled = true; };
 
             mockConnection.Verify(m => m.SendData(publicKey));
+            Assert.IsFalse(dataReceivedHasBeenCalled);
         }
 
         [Test]
@@ -65,6 +68,7 @@ namespace ObjectNetwork.Test
             var data = new byte[] { 2, 4, 6 };
             var encryptedData = new byte[] { 4, 6, 8 };
             var mockAsymmetric = new Mock<IAsymmetricCipher>();
+            mockAsymmetric.Setup(m => m.Decrypt(encryptedData)).Returns(data).Verifiable();
 
             var mockSymmetric = new Mock<ISymmetricCipher>();
             mockSymmetric.Setup(m => m.Decrypt(encryptedData)).Returns(data).Verifiable();
@@ -83,6 +87,7 @@ namespace ObjectNetwork.Test
 
             mockSymmetric.Verify(m => m.Decrypt(encryptedData));
             Assert.AreEqual(data, receivedData);
+            mockAsymmetric.Verify(m => m.Decrypt(It.IsAny<byte[]>()), Times.Exactly(2));
         }
     }
 }
