@@ -8,6 +8,10 @@ using System.Text;
 
 namespace ObjectNetwork.Network
 {
+    /// <summary>
+    /// Using Reflection, objects are serialized and then all methods subscribed to the serialized object
+    /// will be called
+    /// </summary>
     public class ReflectionEventManager : IEventManager
     {
         private Dictionary<string, CommandEventObject> CommandObjects { get; } = new Dictionary<string, CommandEventObject>();
@@ -20,7 +24,7 @@ namespace ObjectNetwork.Network
             this.serializer = serializer;
         }
 
-        public void AddCommandHandler(object commandHandler)
+        public void AddCommandHandler(object commandHandler, IEventFilter filter = null)
         {
             MethodInfo deserializerMethod = typeof(ISerializer).GetMethod(nameof(serializer.Deserialize));
             Type commandHandlerType = commandHandler.GetType();
@@ -32,15 +36,15 @@ namespace ObjectNetwork.Network
                 var commandAttr = method.GetCustomAttribute(typeof(Command));
 
                 if (connectAttr != null)
-                    AddConnectHandler(commandHandler, method);
+                    AddConnectHandler(commandHandler,filter, method);
                 if (disconnectAttr != null)
-                    AddDisconnectHandler(commandHandler, method);
+                    AddDisconnectHandler(commandHandler, filter, method);
                 if (commandAttr != null)
-                    AddCommandHandler(commandHandler, method, deserializerMethod);
+                    AddCommandHandler(commandHandler, filter, method, deserializerMethod);
             }
         }
 
-        private void AddConnectHandler(object commandHandler, MethodInfo method)
+        private void AddConnectHandler(object commandHandler, IEventFilter filter, MethodInfo method)
         {
             var parameters = method.GetParameters();
 
@@ -49,6 +53,7 @@ namespace ObjectNetwork.Network
                 var connectObj = new ConnectEventObject()
                 {
                     Action = method.CreateDelegate(typeof(Action<ObjectConnection>), commandHandler) as Action<ObjectConnection>,
+                    CanExecute = filter?.GenerateFunc(method),
                 };
 
                 if (ConnectObject == null)
@@ -61,7 +66,7 @@ namespace ObjectNetwork.Network
             }
         }
 
-        private void AddDisconnectHandler(object commandHandler, MethodInfo method)
+        private void AddDisconnectHandler(object commandHandler, IEventFilter filter, MethodInfo method)
         {
             var parameters = method.GetParameters();
 
@@ -70,6 +75,7 @@ namespace ObjectNetwork.Network
                 var connectObj = new ConnectEventObject()
                 {
                     Action = method.CreateDelegate(typeof(Action<ObjectConnection>), commandHandler) as Action<ObjectConnection>,
+                    CanExecute = filter?.GenerateFunc(method),
                 };
 
                 if (ConnectObject == null)
@@ -82,7 +88,7 @@ namespace ObjectNetwork.Network
             }
         }
 
-        private void AddCommandHandler(object commandHandler, MethodInfo method, MethodInfo deserializerMethod)
+        private void AddCommandHandler(object commandHandler, IEventFilter filter, MethodInfo method, MethodInfo deserializerMethod)
         {
             var methodParameters = method.GetParameters();
             if (methodParameters.Length != 2 || methodParameters[0].ParameterType != typeof(ObjectConnection))
@@ -99,7 +105,7 @@ namespace ObjectNetwork.Network
                 //CommandMethod = method.CreateDelegate(methodAction,commandHandler),
                 //DeserializerMethod = deserializeMethInfo.CreateDelegate(deserializeFunc, serializer),
                 DeserializerMethod = Delegate.CreateDelegate(deserializeFunc, serializer, deserializeMethInfo),
-                CanExecute = /*filter?.GenerateFunc(commandHandlerType, method) ??*/ (() => true)
+                CanExecute = filter?.GenerateFunc(method),
             };
 
             CommandObjects[commandObjectType.Name] = commandObj;

@@ -130,7 +130,6 @@ namespace ObjectNetwork.Test
             Assert.IsTrue(testHandler.HasOnCommandBeenCalled);
         }
 
-
         [Test]
         public void Test_BadOnCommand()
         {
