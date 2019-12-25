@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace ObjectNetwork.Network
 {
+    /// <summary>
+    /// Constantly checks if the remote peer is connected. 
+    /// If the remote peer is idle the connection is terminated.
+    /// </summary>
     public class IdleChecker
     {
         private const double MaxConnectionIdle = 3;
-        private const double IdleCheckerCooldown = 3;
+        private const double IdleCheckerCooldown = 1;
         private const int UpdateRate = 100;
         private ObjectConnection connection;
         private Stopwatch stopWatch;
