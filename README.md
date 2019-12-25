@@ -7,7 +7,7 @@ When working with Socket code directly or most other network libraries, code can
  
  
  ### Quick start
- Add a [Connect], [Command] or [Disconnect] attribute to a method to mark it to be called when an object has been received. The ObjectConnection parameter is optional but if it is present it must be the first argument. When the Command attribute is used you must define which object is sent over the network as the last parameter.
+ Add a [Connect], [Command] or [Disconnect] attribute to a method to mark it to be called when an object has been received. The ObjectConnection parameter is always required and must always be the first argument. When the Command attribute is used you must define which object is sent over the network as the last parameter.
 ```csharp
 public class ExampleCommandHandler
 {
@@ -34,7 +34,7 @@ public class ExampleCommandHandler
     
     //4. This method will be called when a PlayerJoinedObject is received from the other part of the connection
     [Command]
-    public void OnPlayerJoined(PlayerJoinedObject object)
+    public void OnPlayerJoined(ObjectConnection connection, PlayerJoinedObject object)
     {
         // some logic
     }
