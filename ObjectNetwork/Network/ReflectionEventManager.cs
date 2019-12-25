@@ -108,7 +108,7 @@ namespace ObjectNetwork.Network
                 CanExecute = filter?.GenerateFunc(method),
             };
 
-            CommandObjects[commandObjectType.Name] = commandObj;
+            CommandObjects[commandObjectType.FullName] = commandObj;
         }
 
         public void CallCommand(string protocol, object parameter, ObjectConnection connection)
@@ -116,7 +116,7 @@ namespace ObjectNetwork.Network
             if (CommandObjects.ContainsKey(protocol))
             {
                 var commandObj = CommandObjects[protocol];
-                if (commandObj.CanExecute())
+                if (commandObj.CanExecute?.Invoke() ?? true)
                 {
                     var deserializedObject = commandObj.DeserializerMethod((dynamic)parameter);
                     if (deserializedObject != null)

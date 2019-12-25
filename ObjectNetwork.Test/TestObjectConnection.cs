@@ -110,7 +110,7 @@ namespace ObjectNetwork.Test
 
             var mockSerializer = new Mock<ISerializer>();
             mockSerializer.Setup(m => m.Serialize(data)).Returns(serializedData);
-            mockSerializer.Setup(m => m.Serialize("String")).Returns(serializedType);
+            mockSerializer.Setup(m => m.Serialize("System.String")).Returns(serializedType);
 
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
@@ -121,7 +121,7 @@ namespace ObjectNetwork.Test
             objectConnection.SendObject(data);
 
             mockSerializer.Verify(m => m.Serialize(data), Times.Once);
-            mockSerializer.Verify(m => m.Serialize("String"), Times.Once);
+            mockSerializer.Verify(m => m.Serialize("System.String"), Times.Once);
             mockConnection.Verify(m => m.SendData(serializedData), Times.Once);
             mockConnection.Verify(m => m.SendData(serializedType), Times.Once);
         }

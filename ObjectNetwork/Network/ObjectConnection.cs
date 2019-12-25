@@ -37,7 +37,7 @@ namespace ObjectNetwork.Network
 
         public void SendObject<T>(T t)
         {
-            connection.SendData(serializer.Serialize(t.GetType().Name));
+            connection.SendData(serializer.Serialize(t.GetType().FullName));
             connection.SendData(serializer.Serialize(t));
         }
 

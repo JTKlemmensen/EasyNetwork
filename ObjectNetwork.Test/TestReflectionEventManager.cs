@@ -125,7 +125,7 @@ namespace ObjectNetwork.Test
 
             var eventManager = new ReflectionEventManager(mockSerializer.Object);
             eventManager.AddCommandHandler(testHandler);
-            eventManager.CallCommand("String", new byte[] { 1, 2, 3 }, null);
+            eventManager.CallCommand("System.String", new byte[] { 1, 2, 3 }, null);
 
             Assert.IsTrue(testHandler.HasOnCommandBeenCalled);
         }
