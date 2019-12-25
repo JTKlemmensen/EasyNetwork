@@ -68,7 +68,7 @@ namespace ObjectNetwork.Network
             catch (Exception) { }
             finally
             {
-                OnDisconnected?.Invoke();
+                Task.Run(() =>OnDisconnected?.Invoke());
             }
         }
 
