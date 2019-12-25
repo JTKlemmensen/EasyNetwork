@@ -102,8 +102,6 @@ namespace ObjectNetwork.Network
             var commandObj = new CommandEventObject
             {
                 CommandMethod = Delegate.CreateDelegate(methodAction, commandHandler, method),
-                //CommandMethod = method.CreateDelegate(methodAction,commandHandler),
-                //DeserializerMethod = deserializeMethInfo.CreateDelegate(deserializeFunc, serializer),
                 DeserializerMethod = Delegate.CreateDelegate(deserializeFunc, serializer, deserializeMethInfo),
                 CanExecute = filter?.GenerateFunc(method),
             };

@@ -17,7 +17,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Start();
@@ -34,7 +34,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Start();
@@ -52,7 +52,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
@@ -73,7 +73,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
@@ -90,7 +90,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
@@ -115,7 +115,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.SendObject(data);
@@ -138,7 +138,7 @@ namespace ObjectNetwork.Test
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new ObjectConnection(mockConnection.Object, mockEventManager.Object, mockSerializer.Object);
+            var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
             mockConnection.Raise(m => m.OnDataReceived += null, serializedType);

@@ -8,18 +8,16 @@ namespace ObjectNetwork.Network
     public class ObjectConnection
     {
         private IConnection connection;
-        private IEventManager manager;
-        private ISerializer serializer;
+        public IEventManager Manager { get; set; }
+        public ISerializer Serializer { get; set; }
         private bool hasBeenStarted;
         private bool hasBeenStopped;
         private static int idGenerator = 0;
         public int Id { get; } = idGenerator++;
 
-        public ObjectConnection(IConnection connection, IEventManager manager, ISerializer serializer)
+        public ObjectConnection(IConnection connection)
         {
             this.connection = connection;
-            this.manager = manager;
-            this.serializer = serializer;
             connection.OnDataReceived += Connection_OnMessageReceived;
         }
 
@@ -27,18 +25,18 @@ namespace ObjectNetwork.Network
         private void Connection_OnMessageReceived(byte[] data)
         {
             if (protocol == null)
-                protocol = serializer.Deserialize<string>(data);
+                protocol = Serializer.Deserialize<string>(data);
             else
             {
-                manager.CallCommand(protocol, data, this);
+                Manager.CallCommand(protocol, data, this);
                 protocol = null;
             }
         }
 
         public void SendObject<T>(T t)
         {
-            connection.SendData(serializer.Serialize(t.GetType().FullName));
-            connection.SendData(serializer.Serialize(t));
+            connection.SendData(Serializer.Serialize(t.GetType().FullName));
+            connection.SendData(Serializer.Serialize(t));
         }
 
         public void Stop()
@@ -48,7 +46,7 @@ namespace ObjectNetwork.Network
 
             hasBeenStopped = true;
             hasBeenStarted = true;
-            connection.OnDisconnected += () => manager.CallDisconnect(this);
+            connection.OnDisconnected += () => Manager.CallDisconnect(this);
             connection.Stop();
         }
 
@@ -58,7 +56,7 @@ namespace ObjectNetwork.Network
                 return;
 
             hasBeenStarted = true;
-            connection.OnConnected += () => manager.CallConnect(this);
+            connection.OnConnected += () => Manager.CallConnect(this);
             connection.Start();
         }
     }
