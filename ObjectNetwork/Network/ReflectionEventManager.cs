@@ -48,11 +48,11 @@ namespace ObjectNetwork.Network
         {
             var parameters = method.GetParameters();
 
-            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(ObjectConnection))
+            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(DefaultObjectConnection))
             {
                 var connectObj = new ConnectEventObject()
                 {
-                    Action = method.CreateDelegate(typeof(Action<ObjectConnection>), commandHandler) as Action<ObjectConnection>,
+                    Action = method.CreateDelegate(typeof(Action<DefaultObjectConnection>), commandHandler) as Action<DefaultObjectConnection>,
                     CanExecute = filter?.GenerateFunc(method),
                 };
 
@@ -70,11 +70,11 @@ namespace ObjectNetwork.Network
         {
             var parameters = method.GetParameters();
 
-            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(ObjectConnection))
+            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(DefaultObjectConnection))
             {
                 var connectObj = new ConnectEventObject()
                 {
-                    Action = method.CreateDelegate(typeof(Action<ObjectConnection>), commandHandler) as Action<ObjectConnection>,
+                    Action = method.CreateDelegate(typeof(Action<DefaultObjectConnection>), commandHandler) as Action<DefaultObjectConnection>,
                     CanExecute = filter?.GenerateFunc(method),
                 };
 
@@ -91,12 +91,12 @@ namespace ObjectNetwork.Network
         private void AddCommandHandler(object commandHandler, IEventFilter filter, MethodInfo method, MethodInfo deserializerMethod)
         {
             var methodParameters = method.GetParameters();
-            if (methodParameters.Length != 2 || methodParameters[0].ParameterType != typeof(ObjectConnection))
+            if (methodParameters.Length != 2 || methodParameters[0].ParameterType != typeof(DefaultObjectConnection))
                 return;
 
             Type commandObjectType = methodParameters[1].ParameterType;
 
-            var methodAction = Expression.GetActionType(typeof(ObjectConnection), commandObjectType);
+            var methodAction = Expression.GetActionType(typeof(DefaultObjectConnection), commandObjectType);
             var deserializeMethInfo = deserializerMethod.MakeGenericMethod(commandObjectType);
             var deserializeFunc = Expression.GetFuncType(typeof(byte[]), commandObjectType);
             var commandObj = new CommandEventObject
@@ -109,7 +109,7 @@ namespace ObjectNetwork.Network
             CommandObjects[commandObjectType.FullName] = commandObj;
         }
 
-        public void CallCommand(string protocol, object parameter, ObjectConnection connection)
+        public void CallCommand(string protocol, object parameter, DefaultObjectConnection connection)
         {
             if (CommandObjects.ContainsKey(protocol))
             {
@@ -123,7 +123,7 @@ namespace ObjectNetwork.Network
             }
         }
 
-        public void CallConnect(ObjectConnection connection)
+        public void CallConnect(DefaultObjectConnection connection)
         {
             var previous = ConnectObject;
             while(previous != null)
@@ -135,7 +135,7 @@ namespace ObjectNetwork.Network
             }
         }
 
-        public void CallDisconnect(ObjectConnection connection)
+        public void CallDisconnect(DefaultObjectConnection connection)
         {
             var previous = DisconnectObject;
             while (previous != null)
@@ -157,7 +157,7 @@ namespace ObjectNetwork.Network
 
         private class ConnectEventObject
         {
-            public Action<ObjectConnection> Action { get; set; }
+            public Action<DefaultObjectConnection> Action { get; set; }
             public Func<bool> CanExecute { get; set; }
             public ConnectEventObject Next { get; set; }
         }

@@ -6,6 +6,6 @@ namespace ObjectNetwork.Network.Abstract
 {
     public interface IConnectionProvider
     {
-        ObjectConnection Create(string ip, int port);
+        IObjectConnection Create(string ip, int port);
     }
 }

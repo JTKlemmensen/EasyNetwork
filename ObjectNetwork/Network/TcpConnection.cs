@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace ObjectNetwork.Network
 {
+    /// <summary>
+    /// Implements a tcp connection to a remote peer.
+    /// </summary>
     public class TcpConnection : IConnection
     {
         private GetSocket getSocket;
@@ -26,6 +30,10 @@ namespace ObjectNetwork.Network
         }
 
         private readonly object writeLock = new object();
+
+        private string ip;
+        public string Ip => ip;
+
         public void SendData(byte[] data)
         {
             if (writer != null && stop != true && data != null)
@@ -48,6 +56,9 @@ namespace ObjectNetwork.Network
             try
             {
                 socket = getSocket();
+
+                if(socket.RemoteEndPoint is IPEndPoint endPoint)
+                    ip = endPoint.Address.ToString();
 
                 NetworkStream stream = new NetworkStream(socket);
                 stream.ReadTimeout = 100;

@@ -12,7 +12,7 @@ namespace ObjectNetwork.Network
         public IEventManager Manager { get; set; }
         public IDataFormatters DataFormatters { get; set; }
 
-        public ObjectConnection Create(string ip, int port)
+        public IObjectConnection Create(string ip, int port)
         {
             ValidateProperties();
 
@@ -28,7 +28,7 @@ namespace ObjectNetwork.Network
             };
 
             var secureConnection = new SecureClientConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
-            var objectConnection = new ObjectConnection(secureConnection) {Manager = Manager, Serializer = DataFormatters.Serializer };
+            var objectConnection = new DefaultObjectConnection(secureConnection) {Manager = Manager, Serializer = DataFormatters.Serializer };
 
             return objectConnection;
         }

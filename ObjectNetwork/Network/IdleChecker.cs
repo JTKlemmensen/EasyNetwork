@@ -18,7 +18,7 @@ namespace ObjectNetwork.Network
         /// <summary>
         /// Stores a bool for each subscribed connection, 
         /// </summary>
-        private ConcurrentDictionary<ObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<ObjectConnection, IdleInfo>();
+        private ConcurrentDictionary<DefaultObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<DefaultObjectConnection, IdleInfo>();
         private const int MaxConnectionIdle = 5000;
         private const int IdleCheckerCooldown = 1000;
         private const int RefreshRate = 50;
@@ -58,7 +58,7 @@ namespace ObjectNetwork.Network
         }
 
         [Connect]
-        public void OnConnect(ObjectConnection connection)
+        public void OnConnect(DefaultObjectConnection connection)
         {
             Task.Run(() =>
             {
@@ -68,7 +68,7 @@ namespace ObjectNetwork.Network
         }
 
         [Disconnect]
-        public void OnDisconnect(ObjectConnection connection)
+        public void OnDisconnect(DefaultObjectConnection connection)
         {
             Task.Run(() =>
             {
@@ -78,13 +78,13 @@ namespace ObjectNetwork.Network
         }
 
         [Command]
-        public void OnPing(ObjectConnection connection, PingObject pingObject)
+        public void OnPing(DefaultObjectConnection connection, PingObject pingObject)
         {
             connection.SendObject(new PongObject());
         }
 
         [Command]
-        public void OnPong(ObjectConnection connection, PongObject pongObject)
+        public void OnPong(DefaultObjectConnection connection, PongObject pongObject)
         {
             Task.Run(() =>
             {

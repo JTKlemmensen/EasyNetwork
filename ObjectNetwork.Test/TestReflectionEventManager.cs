@@ -22,37 +22,37 @@ namespace ObjectNetwork.Test
             public bool HasBadOnCommandBeenCalled { get; private set; }
 
             [Connect]
-            public void OnConnect(ObjectConnection con)
+            public void OnConnect(DefaultObjectConnection con)
             {
                 HasOnConnectBeenCalled = true;
             }
 
             [Connect]
-            public void BadOnConnect(ObjectConnection con, string data)
+            public void BadOnConnect(DefaultObjectConnection con, string data)
             {
                 HasBadOnConnectBeenCalled = true;
             }
 
             [Disconnect]
-            public void OnDisconnect(ObjectConnection con)
+            public void OnDisconnect(DefaultObjectConnection con)
             {
                 HasOnDisconnectBeenCalled = true;
             }
 
             [Disconnect]
-            public void BadOnDisconnect(ObjectConnection con, int data)
+            public void BadOnDisconnect(DefaultObjectConnection con, int data)
             {
                 HasBadOnDisconnectBeenCalled = true;
             }
 
             [Command]
-            public void OnCommand(ObjectConnection con, string connection)
+            public void OnCommand(DefaultObjectConnection con, string connection)
             {
                 HasOnCommandBeenCalled = true;
             }
 
             [Command]
-            public void BadOnCommand(string connection, ObjectConnection con)
+            public void BadOnCommand(string connection, DefaultObjectConnection con)
             {
                 HasBadOnCommandBeenCalled = true;
             }

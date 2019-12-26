@@ -22,7 +22,7 @@ namespace ObjectNetwork.Network
             return this;
         }
 
-        public ObjectConnection CreateClient(string ip, int port)
+        public IObjectConnection CreateClient(string ip, int port)
         {
             var connectionProvider = new SecureTcpConnectionProvider {Manager = GetManager(), DataFormatters= DataFormatters };
             return connectionProvider.Create(ip, port);

@@ -7,8 +7,8 @@ namespace ObjectNetwork.Network.Abstract
     public interface IEventManager
     {
         void AddCommandHandler(object commandHandler, IEventFilter filter = null);
-        void CallConnect(ObjectConnection connection);
-        void CallCommand(string protocol, object parameter, ObjectConnection connection);
-        void CallDisconnect(ObjectConnection connection);
+        void CallConnect(DefaultObjectConnection connection);
+        void CallCommand(string protocol, object parameter, DefaultObjectConnection connection);
+        void CallDisconnect(DefaultObjectConnection connection);
     }
 }

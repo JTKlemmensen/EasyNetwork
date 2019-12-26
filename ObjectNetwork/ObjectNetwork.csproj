@@ -2,10 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Jonas T. Klemmensen</Authors>
+    <Description>Network library that simplifies networking to using a few attributes. It takes care of serialization and encryption.</Description>
+    <PackageTags>Network, Tcp, Encryption, Serialization, Events, RSA, AES</PackageTags>
+    <PackageProjectUrl>https://github.com/JTKlemmensen/ObjectNetwork</PackageProjectUrl>
+    <PackageIcon>ObjectNetwork Icon.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/JTKlemmensen/ObjectNetwork</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Pictures\ObjectNetwork Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

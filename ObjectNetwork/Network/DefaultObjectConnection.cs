@@ -6,17 +6,20 @@ using System.Text;
 
 namespace ObjectNetwork.Network
 {
-    public class ObjectConnection
+    /// <summary>
+    /// Wraps a binary connection
+    /// </summary>
+    public class DefaultObjectConnection : IObjectConnection
     {
         private IConnection connection;
         public IEventManager Manager { get; set; }
         public ISerializer Serializer { get; set; }
         private bool hasBeenStarted;
         private bool hasBeenStopped;
-        private static int idGenerator = 0;
-        public int Id { get; } = idGenerator++;
 
-        public ObjectConnection(IConnection connection)
+        public string Ip => connection.Ip;
+
+        public DefaultObjectConnection(IConnection connection)
         {
             this.connection = connection;
             connection.OnDataReceived += Connection_OnMessageReceived;

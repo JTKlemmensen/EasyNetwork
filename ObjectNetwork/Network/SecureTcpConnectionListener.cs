@@ -43,7 +43,7 @@ namespace ObjectNetwork.Network
                     var socket = listener.AcceptSocket();
                     GetSocket getSocket = () => socket;
                     var secureConnection = new SecureServerConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
-                    var objectConnection = new ObjectConnection(secureConnection) { Manager = Manager, Serializer = DataFormatters.Serializer };
+                    var objectConnection = new DefaultObjectConnection(secureConnection) { Manager = Manager, Serializer = DataFormatters.Serializer };
                     objectConnection.Start();
                 }
         }

@@ -14,6 +14,8 @@ namespace ObjectNetwork.Network.Abstract
         protected ISymmetricCipher SymmetricCipher { get; set; }
         protected IAsymmetricCipher AsymmetricCipher { get; set; }
 
+        public string Ip => Connection.Ip;
+
         public event DataReceived OnDataReceived;
         public event Disconnected OnDisconnected;
         public virtual event Connected OnConnected;

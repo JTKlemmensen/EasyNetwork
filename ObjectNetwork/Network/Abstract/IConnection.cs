@@ -10,6 +10,11 @@ namespace ObjectNetwork.Network.Abstract
     public interface IConnection
     {
         /// <summary>
+        /// Returns the ip of the remote peer
+        /// </summary>
+        string Ip { get; }
+
+        /// <summary>
         /// Setup initialization code and start listening for incomming data
         /// </summary>
         /// 
