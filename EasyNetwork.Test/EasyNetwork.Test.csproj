@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ObjectNetwork\ObjectNetwork.csproj" />
+    <ProjectReference Include="..\EasyNetwork\EasyNetwork.csproj" />
   </ItemGroup>
 
 </Project>
