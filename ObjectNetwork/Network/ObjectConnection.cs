@@ -1,6 +1,7 @@
 ﻿using ObjectNetwork.Network.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace ObjectNetwork.Network
@@ -21,22 +22,17 @@ namespace ObjectNetwork.Network
             connection.OnDataReceived += Connection_OnMessageReceived;
         }
 
-        private string protocol = null;
         private void Connection_OnMessageReceived(byte[] data)
         {
-            if (protocol == null)
-                protocol = Serializer.Deserialize<string>(data);
-            else
-            {
-                Manager.CallCommand(protocol, data, this);
-                protocol = null;
-            }
+            var message = Serializer.Deserialize<NetworkMessage>(data);
+
+            Manager.CallCommand(message.Name, message.Data, this);
         }
 
         public void SendObject<T>(T t)
         {
-            connection.SendData(Serializer.Serialize(t.GetType().FullName));
-            connection.SendData(Serializer.Serialize(t));
+            var message = new NetworkMessage { Name= t.GetType().FullName, Data = Serializer.Serialize(t) };
+            connection.SendData(Serializer.Serialize(message));
         }
 
         public void Stop()
