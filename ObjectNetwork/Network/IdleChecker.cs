@@ -1,5 +1,6 @@
 ﻿using ObjectNetwork.Network.Attributes;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -14,86 +15,96 @@ namespace ObjectNetwork.Network
     /// </summary>
     public class IdleChecker
     {
-        private const double MaxConnectionIdle = 3;
-        private const double IdleCheckerCooldown = 1;
-        private const int UpdateRate = 100;
-        private ObjectConnection connection;
-        private Stopwatch stopWatch;
-        private bool HasPonged;
+        /// <summary>
+        /// Stores a bool for each subscribed connection, 
+        /// </summary>
+        private ConcurrentDictionary<ObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<ObjectConnection, IdleInfo>();
+        private const int MaxConnectionIdle = 5000;
+        private const int IdleCheckerCooldown = 1000;
+        private const int RefreshRate = 50;
         private bool run;
 
-        public IdleChecker(ObjectConnection connection)
+        public IdleChecker()
         {
-            this.connection = connection;
-            stopWatch = new Stopwatch();
+            run = true;
+            new Task(Run, TaskCreationOptions.LongRunning).Start();
         }
 
         private void Run()
         {
-            run = true;
-            OnPong(new PongObject());
-            while (run)
-                if (HasPonged)
-                {
-                    if (!IsOnCooldown())
-                        Ping();
-                    else
-                        Thread.Sleep(UpdateRate);
-                }
-                else
-                {
-                    if (IsConnectionIdle())
+            while(run)
+            {
+                var time = DateTime.Now.Ticks;
+                foreach(var c in Connections)
+                    if (c.Value.HasPonged)
                     {
-                        connection.Stop();
-                        run = false;
+                        if (time - c.Value.LastTicks > IdleCheckerCooldown)
+                        {
+                            c.Key.SendObject(new PingObject());
+                            c.Value.LastTicks = time;
+                            c.Value.HasPonged = false;
+                        }
                     }
-                    else
-                        Thread.Sleep(UpdateRate);
-                }
+                    else if (time - c.Value.LastTicks > MaxConnectionIdle)
+                        c.Key.Stop();
+
+                Thread.Sleep(IdleCheckerCooldown);
+            }
         }
 
-        private bool IsOnCooldown()
+        public void Stop()
         {
-            return stopWatch.Elapsed.TotalSeconds <= IdleCheckerCooldown;
-        }
-
-        private bool IsConnectionIdle()
-        {
-            return stopWatch.Elapsed.TotalSeconds > MaxConnectionIdle;
-        }
-
-        private void Ping()
-        {
-            HasPonged = false;
-            stopWatch.Reset();
-            stopWatch.Start();
-            connection.SendObject(new PingObject());
+            run = false;
         }
 
         [Connect]
         public void OnConnect(ObjectConnection connection)
         {
-            Task.Run(Run);
+            Task.Run(() =>
+            {
+                while (!Connections.TryAdd(connection, new IdleInfo { LastTicks = DateTime.Now.Ticks, HasPonged = true }))
+                    Task.Delay(RefreshRate);
+            });
         }
 
         [Disconnect]
         public void OnDisconnect(ObjectConnection connection)
         {
-            run = false;
+            Task.Run(() =>
+            {
+                while (!Connections.TryRemove(connection, out IdleInfo info))
+                    Task.Delay(RefreshRate);
+            });
         }
 
         [Command]
-        public void OnPing(PingObject pingObject)
+        public void OnPing(ObjectConnection connection, PingObject pingObject)
         {
             connection.SendObject(new PongObject());
         }
 
         [Command]
-        public void OnPong(PongObject pongObject)
+        public void OnPong(ObjectConnection connection, PongObject pongObject)
         {
-            HasPonged = true;
-            stopWatch.Reset();
-            stopWatch.Start();
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    if(Connections.TryGetValue(connection, out IdleInfo info))
+                    {
+                        info.HasPonged = true;
+                        info.LastTicks = DateTime.Now.Ticks;
+                        break;
+                    }
+                    Task.Delay(RefreshRate);
+                }     
+            });
+        }
+
+        private class IdleInfo
+        {
+            public long LastTicks { get; set; }
+            public bool HasPonged { get; set; }
         }
     }
 }
