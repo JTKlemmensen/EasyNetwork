@@ -42,17 +42,16 @@ public class ExampleCommandHandler
 ```
 #### Client init example
 ```csharp
-ObjectConnection connection = ConnectionBuilder.CreateClient("127.0.0.1",25000);
-connection.AddCommandHandler(new ExampleCommandHandler());
-connection.Start();
+new ConnectionBuilder()
+    .AddEventHandler(new ExampleCommandHandler())
+    .CreateClient("127.0.0.1", 25000)
+    .Start();
 ```
 
 #### Server init example
 ```csharp
-IConnectionListener listener = ConnectionBuilder.CreateServer(25000);
-listener.OnInboundConnection += (connection) => 
-{
-    connection.AddCommandHandler(new ExampleCommandHandler());
-    connection.Start();
-};
+var listener = new ConnectionBuilder()
+    .AddEventHandler(new ExampleCommandHandler())
+    .CreateServer(25000);
+listener.Start();
 ```
