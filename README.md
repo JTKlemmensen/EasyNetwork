@@ -56,3 +56,12 @@ var listener = new ConnectionBuilder()
     .CreateServer(25000);
 listener.Start();
 ```
+#### Default serialization
+EasyNetwork uses the easy built-in way of serializing objects.
+```csharp
+[Serializable]
+public class MessageObject
+{
+    public string Content {get; set;}
+}
+```
