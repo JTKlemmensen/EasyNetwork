@@ -1,5 +1,5 @@
-# ObjectNetwork
-ObjectNetwork abstracts most network code(event handlers, serialization, encryption, etc.) to using a few very simple attributes.
+# EasyNetwork
+EasyNetwork abstracts most network code(event handlers, serialization, encryption, etc.) to using a few very simple attributes.
 
 ### Why
 When working with Socket code directly or most other network libraries, code can quickly become messy and
