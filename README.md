@@ -1,4 +1,5 @@
-# EasyNetwork
+![Image of EasyNetwork Logo](https://i.imgur.com/kfECXD0.png)
+
 EasyNetwork abstracts most network code(event handlers, serialization, encryption, etc.) to using a few very simple attributes.
 
 ### Why
