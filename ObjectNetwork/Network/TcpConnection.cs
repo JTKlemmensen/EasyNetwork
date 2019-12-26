@@ -25,14 +25,17 @@ namespace ObjectNetwork.Network
             this.getSocket = getSocket;
         }
 
+        private readonly object writeLock = new object();
         public void SendData(byte[] data)
         {
-            if (writer != null && stop != true)
-            {
-                writer.Write(data.Length);
-                writer.Write(data);
-                writer.Flush();
-            }
+            if (writer != null && stop != true && data != null)
+                lock (writeLock)
+                {
+                    writer.Write(data.Length);
+                    writer.Write(data);
+
+                    writer.Flush();
+                }
         }
 
         public void Stop()
@@ -75,7 +78,7 @@ namespace ObjectNetwork.Network
         public void Start()
         {
             stop = false;
-            Task.Run(Run);
+            new Task(Run, TaskCreationOptions.LongRunning).Start();
         }
     }
 
