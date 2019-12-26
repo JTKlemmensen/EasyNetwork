@@ -9,7 +9,7 @@ When working with Socket code directly or most other network libraries, code can
  ### Quick start
  Add a [Connect], [Command] or [Disconnect] attribute to a method to mark it to be called when an object has been received. The ObjectConnection parameter is always required and must always be the first argument. When the Command attribute is used you must declare which object to subscribe.
 ```csharp
-public class ExampleCommandHandler
+public class ExampleEventHandler
 {
     //1. This method will be called when a connection has succesfully been established. 
     [Connect]
@@ -43,7 +43,7 @@ public class ExampleCommandHandler
 #### Client init example
 ```csharp
 new ConnectionBuilder()
-    .AddEventHandler(new ExampleCommandHandler())
+    .AddEventHandler(new ExampleEventHandler())
     .CreateClient("127.0.0.1", 25000)
     .Start();
 ```
@@ -51,7 +51,7 @@ new ConnectionBuilder()
 #### Server init example
 ```csharp
 var listener = new ConnectionBuilder()
-    .AddEventHandler(new ExampleCommandHandler())
+    .AddEventHandler(new ExampleEventHandler())
     .CreateServer(25000);
 listener.Start();
 ```
