@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ObjectNetwork.Network
 {
+    [Serializable]
     public class PongObject
     {
     }

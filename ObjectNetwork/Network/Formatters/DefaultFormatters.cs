@@ -7,7 +7,7 @@ namespace ObjectNetwork.Network.Formatters
 {
     public class DefaultDataFormatters : IDataFormatters
     {
-        public ISerializer Serializer { get; } = new ZeroFormatterSerializer();
+        public ISerializer Serializer { get; } = new BinarySerializer();
 
         public ISymmetricCipher SymmetricCipher { get; } = new AESSymmetricCipher();
 
