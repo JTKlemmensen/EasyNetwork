@@ -10,12 +10,12 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/JTKlemmensen/EasyNetwork</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Added icon</PackageReleaseNotes>
+    <PackageReleaseNotes>- Renamed namespace</PackageReleaseNotes>
     <PackageLicenseFile>README.md</PackageLicenseFile>
     <PackageLicenseExpression></PackageLicenseExpression>
     <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageId>EasyNetwork</PackageId>
     <Product>EasyNetwork</Product>
   </PropertyGroup>
