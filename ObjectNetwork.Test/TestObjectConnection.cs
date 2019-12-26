@@ -121,19 +121,17 @@ namespace ObjectNetwork.Test
             objectConnection.SendObject(data);
 
             mockSerializer.Verify(m => m.Serialize(data), Times.Once);
-            mockSerializer.Verify(m => m.Serialize("System.String"), Times.Once);
-            mockConnection.Verify(m => m.SendData(serializedData), Times.Once);
-            mockConnection.Verify(m => m.SendData(serializedType), Times.Once);
+            mockSerializer.Verify(m => m.Serialize(It.IsAny<NetworkMessage>()), Times.Once);
+            mockConnection.Verify(m => m.SendData(It.IsAny<byte[]>()), Times.Once);
         }
 
         [Test]
         public void Test_ReceiveData()
         {
-            byte[] serializedData = new byte[] { 1, 2, 3 };
-            byte[] serializedType = new byte[] { 2, 3, 4 };
-
+            byte[] serializedData = new byte[] { 1,2,3 };
+            byte[] serializedMessage = new byte[] { 1,2,3,4 };
             var mockSerializer = new Mock<ISerializer>();
-            mockSerializer.Setup(m => m.Deserialize<string>(serializedType)).Returns("typeName");
+            mockSerializer.Setup(m => m.Deserialize<NetworkMessage>(serializedMessage)).Returns(new NetworkMessage {Data= serializedData, Name="typeName"});
 
             var mockConnection = new Mock<IConnection>();
             var mockEventManager = new Mock<IEventManager>();
@@ -141,8 +139,7 @@ namespace ObjectNetwork.Test
             var objectConnection = new ObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
 
             //Act
-            mockConnection.Raise(m => m.OnDataReceived += null, serializedType);
-            mockConnection.Raise(m => m.OnDataReceived += null, serializedData);
+            mockConnection.Raise(m => m.OnDataReceived += null, serializedMessage);
 
             mockEventManager.Verify(m => m.CallCommand("typeName", serializedData, objectConnection));
         }
