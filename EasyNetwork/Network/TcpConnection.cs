@@ -1,4 +1,4 @@
-﻿using ObjectNetwork.Network.Abstract;
+﻿using EasyNetwork.Network.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     /// <summary>
     /// Implements a tcp connection to a remote peer.

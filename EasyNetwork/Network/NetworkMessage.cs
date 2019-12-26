@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     [Serializable]
     public class NetworkMessage

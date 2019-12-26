@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network.Abstract
+namespace EasyNetwork.Network.Abstract
 {
     /// <summary>
     /// Represents a very low level connection to a remote peer

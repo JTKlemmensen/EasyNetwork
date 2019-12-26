@@ -1,10 +1,10 @@
-﻿using ObjectNetwork.Network.Abstract;
+﻿using EasyNetwork.Network.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     /// <summary>
     /// Combines 2 EventFilters in to 1. Returns true if either one return true or are null

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network.Abstract
+namespace EasyNetwork.Network.Abstract
 {
     /// <summary>
     /// Stores a ISerializer, ISymmetricCipher and a IAsymmetricCipher

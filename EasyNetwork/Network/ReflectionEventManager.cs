@@ -1,12 +1,12 @@
-﻿using ObjectNetwork.Network.Abstract;
-using ObjectNetwork.Network.Attributes;
+﻿using EasyNetwork.Network.Abstract;
+using EasyNetwork.Network.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     /// <summary>
     /// Using Reflection, objects are serialized and then all methods subscribed to the serialized object

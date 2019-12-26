@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network.Attributes
+namespace EasyNetwork.Network.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class Disconnect : System.Attribute

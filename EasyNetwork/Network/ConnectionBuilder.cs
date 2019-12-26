@@ -1,10 +1,10 @@
-﻿using ObjectNetwork.Network.Abstract;
-using ObjectNetwork.Network.Formatters;
+﻿using EasyNetwork.Network.Abstract;
+using EasyNetwork.Network.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     public class ConnectionBuilder
     {

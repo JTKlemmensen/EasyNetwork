@@ -1,4 +1,4 @@
-﻿using ObjectNetwork.Network.Attributes;
+﻿using EasyNetwork.Network.Attributes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ObjectNetwork.Network
+namespace EasyNetwork.Network
 {
     /// <summary>
     /// Constantly checks if the remote peer is connected. 

@@ -1,11 +1,11 @@
-﻿using ObjectNetwork.Network.Abstract;
+﻿using EasyNetwork.Network.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace ObjectNetwork.Network.Formatters
+namespace EasyNetwork.Network.Formatters
 {
     public class BinarySerializer : ISerializer
     {

@@ -1,11 +1,11 @@
 ﻿using Moq;
 using NUnit.Framework;
-using ObjectNetwork.Network.Abstract;
+using EasyNetwork.Network.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObjectNetwork.Test
+namespace EasyNetwork.Test
 {
     public class TestSecureConnection
     {

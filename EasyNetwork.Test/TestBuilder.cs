@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using ObjectNetwork.Network;
-using ObjectNetwork.Network.Abstract;
-using ObjectNetwork.Network.Attributes;
+using EasyNetwork.Network;
+using EasyNetwork.Network.Abstract;
+using EasyNetwork.Network.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ObjectNetwork.Test
+namespace EasyNetwork.Test
 {
     public class TestBuilder
     {

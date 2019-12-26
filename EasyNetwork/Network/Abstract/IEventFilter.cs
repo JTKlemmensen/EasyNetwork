@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace ObjectNetwork.Network.Abstract
+namespace EasyNetwork.Network.Abstract
 {
     /// <summary>
     /// Filters when an event should be run based on the generated Func
