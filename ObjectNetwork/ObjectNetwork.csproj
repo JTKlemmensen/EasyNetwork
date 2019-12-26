@@ -10,13 +10,12 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/JTKlemmensen/ObjectNetwork</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- ObjectConnection renamed to DefaultObjectConnect &amp; has become an implementation of IObjectConnection
- - A connection now stores ip</PackageReleaseNotes>
+    <PackageReleaseNotes>- Replaced coupling from DefaultObjectConnection to IObjectConnection</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageLicenseExpression></PackageLicenseExpression>
     <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
