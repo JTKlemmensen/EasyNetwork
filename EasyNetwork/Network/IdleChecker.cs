@@ -20,8 +20,10 @@ namespace EasyNetwork.Network
         /// Stores a bool for each subscribed connection, 
         /// </summary>
         private IDictionary<IObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<IObjectConnection, IdleInfo>();
-        private const int MaxConnectionIdle = 3000;
-        private const int IdleCheckerCooldown = 1000;
+        private const long TicksPerMillisecond = 10000;
+        private const long MillisecondPerSecond = 1000;
+        private const long MaxConnectionIdle = 3 * TicksPerMillisecond * MillisecondPerSecond;
+        private const long IdleCheckerCooldown = 1 * TicksPerMillisecond * MillisecondPerSecond;
         private const int RefreshRate = 50;
         private bool run;
 
