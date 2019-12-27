@@ -45,8 +45,7 @@ public class ExampleEventHandler
 ```csharp
 new ConnectionBuilder()
     .AddEventHandler(new ExampleEventHandler())
-    .CreateClient("127.0.0.1", 25000)
-    .Start();
+    .CreateClient("127.0.0.1", 25000);
 ```
 
 #### Server init example
@@ -54,7 +53,6 @@ new ConnectionBuilder()
 var listener = new ConnectionBuilder()
     .AddEventHandler(new ExampleEventHandler())
     .CreateServer(25000);
-listener.Start();
 ```
 #### Default serialization
 EasyNetwork uses the easy built-in way of serializing objects.
