@@ -1,4 +1,5 @@
-﻿using EasyNetwork.Network.Attributes;
+﻿using EasyNetwork.Network.Abstract;
+using EasyNetwork.Network.Attributes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,8 +19,8 @@ namespace EasyNetwork.Network
         /// <summary>
         /// Stores a bool for each subscribed connection, 
         /// </summary>
-        private ConcurrentDictionary<DefaultObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<DefaultObjectConnection, IdleInfo>();
-        private const int MaxConnectionIdle = 5000;
+        private IDictionary<IObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<IObjectConnection, IdleInfo>();
+        private const int MaxConnectionIdle = 3000;
         private const int IdleCheckerCooldown = 1000;
         private const int RefreshRate = 50;
         private bool run;
@@ -48,7 +49,7 @@ namespace EasyNetwork.Network
                     else if (time - c.Value.LastTicks > MaxConnectionIdle)
                         c.Key.Stop();
 
-                Thread.Sleep(IdleCheckerCooldown);
+                Thread.Sleep(RefreshRate);
             }
         }
 
@@ -58,47 +59,29 @@ namespace EasyNetwork.Network
         }
 
         [Connect]
-        public void OnConnect(DefaultObjectConnection connection)
+        public void OnConnect(IObjectConnection connection)
         {
-            Task.Run(() =>
-            {
-                while (!Connections.TryAdd(connection, new IdleInfo { LastTicks = DateTime.Now.Ticks, HasPonged = true }))
-                    Task.Delay(RefreshRate);
-            });
+            Connections[connection] = new IdleInfo { LastTicks = DateTime.Now.Ticks, HasPonged = true };
         }
 
         [Disconnect]
-        public void OnDisconnect(DefaultObjectConnection connection)
+        public void OnDisconnect(IObjectConnection connection)
         {
-            Task.Run(() =>
-            {
-                while (!Connections.TryRemove(connection, out IdleInfo info))
-                    Task.Delay(RefreshRate);
-            });
+            Connections.Remove(connection);
         }
 
         [Command]
-        public void OnPing(DefaultObjectConnection connection, PingObject pingObject)
+        public void OnPing(IObjectConnection connection, PingObject pingObject)
         {
             connection.SendObject(new PongObject());
         }
 
         [Command]
-        public void OnPong(DefaultObjectConnection connection, PongObject pongObject)
+        public void OnPong(IObjectConnection connection, PongObject pongObject)
         {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    if(Connections.TryGetValue(connection, out IdleInfo info))
-                    {
-                        info.HasPonged = true;
-                        info.LastTicks = DateTime.Now.Ticks;
-                        break;
-                    }
-                    Task.Delay(RefreshRate);
-                }     
-            });
+            var info = Connections[connection];
+            info.HasPonged = true;
+            info.LastTicks = DateTime.Now.Ticks;
         }
 
         private class IdleInfo
