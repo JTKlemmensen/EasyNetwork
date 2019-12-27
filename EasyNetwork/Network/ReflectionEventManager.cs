@@ -114,7 +114,7 @@ namespace EasyNetwork.Network
             if (CommandObjects.ContainsKey(protocol))
             {
                 var commandObj = CommandObjects[protocol];
-                if (commandObj.CanExecute?.Invoke() ?? true)
+                if (commandObj.CanExecute?.Invoke(connection) ?? true)
                 {
                     var deserializedObject = commandObj.DeserializerMethod((dynamic)parameter);
                     if (deserializedObject != null)
@@ -128,7 +128,7 @@ namespace EasyNetwork.Network
             var previous = ConnectObject;
             while(previous != null)
             {
-                if (previous.CanExecute?.Invoke() ?? true)
+                if (previous.CanExecute?.Invoke(connection) ?? true)
                     previous.Action.Invoke(connection);
 
                 previous = previous.Next;
@@ -140,7 +140,7 @@ namespace EasyNetwork.Network
             var previous = DisconnectObject;
             while (previous != null)
             {
-                if (previous.CanExecute?.Invoke() ?? true)
+                if (previous.CanExecute?.Invoke(connection) ?? true)
                     previous.Action.Invoke(connection);
 
                 previous = previous.Next;
@@ -151,14 +151,14 @@ namespace EasyNetwork.Network
         {
             public dynamic CommandMethod { get; set; }
             public dynamic DeserializerMethod { get; set; }
-            public Func<bool> CanExecute { get; set; }
+            public Func<IObjectConnection, bool> CanExecute { get; set; }
             public CommandEventObject Next { get; set; }
         }
 
         private class ConnectEventObject
         {
             public Action<IObjectConnection> Action { get; set; }
-            public Func<bool> CanExecute { get; set; }
+            public Func<IObjectConnection, bool> CanExecute { get; set; }
             public ConnectEventObject Next { get; set; }
         }
     }

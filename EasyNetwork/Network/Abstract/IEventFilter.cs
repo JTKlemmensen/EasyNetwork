@@ -13,6 +13,6 @@ namespace EasyNetwork.Network.Abstract
         /// <summary>
         /// Generates a function that defines whether or not a network event is executed.
         /// </summary>
-        Func<bool> GenerateFunc(MethodInfo methodInfo);
+        Func<IObjectConnection, bool> GenerateFunc(MethodInfo methodInfo);
     }
 }
