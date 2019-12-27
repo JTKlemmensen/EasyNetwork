@@ -14,10 +14,10 @@ namespace EasyNetwork.Network
     {
         public IEventFilter Left { get; set; }
         public IEventFilter Right { get; set; }
-        public Func<bool> GenerateFunc(MethodInfo methodInfo)
+        public Func<IObjectConnection,bool> GenerateFunc(MethodInfo methodInfo)
         {
-            return () => (Left?.GenerateFunc(methodInfo).Invoke() ?? true) &&
-                         (Right?.GenerateFunc(methodInfo).Invoke() ?? true);
+            return (c) => (Left?.GenerateFunc(methodInfo).Invoke(c) ?? true) &&
+                         (Right?.GenerateFunc(methodInfo).Invoke(c) ?? true);
         }
     }
 }
