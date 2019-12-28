@@ -47,8 +47,8 @@ IConnection client = new ConnectionBuilder()
     .AddEventHandler(new ExampleEventHandler())
     .CreateClient("127.0.0.1", 25000);
     
-client.OnConnect((c)=>{Console.WriteLine("Lambda: Client connected")});
-client.OnCommand<MessageObject>((c, m)=>{Console.WriteLine("Lambda received message: "+m.Content)});
+client.OnConnect((c)=>Console.WriteLine("Lambda: Client connected"););
+client.OnCommand<MessageObject>((c, m)=>Console.WriteLine("Lambda received message: "+m.Content););
 
 client.Start();
 ```
