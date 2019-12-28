@@ -11,5 +11,8 @@ namespace EasyNetwork.Network.Abstract
     {
         void Start();
         void Stop();
+        event InboundConnection OnInboundConnection;
     }
+
+    public delegate void InboundConnection(IObjectConnection con);
 }

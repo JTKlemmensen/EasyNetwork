@@ -15,6 +15,8 @@ namespace EasyNetwork.Network
         public IDataFormatters DataFormatters { get; set; }
         private bool run;
 
+        public event InboundConnection OnInboundConnection;
+
         public SecureTcpConnectionListener(int port)
         {
             this.port = port;
@@ -40,10 +42,10 @@ namespace EasyNetwork.Network
             while (run)
                 if (listener.Pending())
                 {
-                    var socket = listener.AcceptSocket();
-                    GetSocket getSocket = () => socket;
+                    GetSocket getSocket = () => listener.AcceptSocket();
                     var secureConnection = new SecureServerConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
                     var objectConnection = new DefaultObjectConnection(secureConnection) { Manager = Manager, Serializer = DataFormatters.Serializer };
+                    OnInboundConnection?.Invoke(objectConnection);
                     objectConnection.Start();
                 }
         }
