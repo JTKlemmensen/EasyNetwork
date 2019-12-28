@@ -35,7 +35,7 @@ namespace EasyNetwork.Network.Abstract
         event DataReceived OnDataReceived;
 
         /// <summary>
-        /// Called when no longer listens for incoming data
+        /// Called when disconnected from the remote peer and no longer listens for incoming data
         /// </summary>
         event Disconnected OnDisconnected;
 

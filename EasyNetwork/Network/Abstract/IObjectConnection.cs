@@ -13,5 +13,8 @@ namespace EasyNetwork.Network.Abstract
         void SendObject<T>(T t);
         void Start();
         void Stop();
+        void OnCommand<T>(Action<IObjectConnection, T> command);
+        void OnConnect(Action<IObjectConnection> connect);
+        void OnDisconnect(Action<IObjectConnection> disconnect);
     }
 }
