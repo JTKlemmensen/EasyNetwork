@@ -1,10 +1,10 @@
 ![Image of EasyNetwork Logo](https://i.imgur.com/kfECXD0.png)
 
-EasyNetwork abstracts most network code(event handlers, serialization, encryption, etc.) to using a few very simple attributes.
+EasyNetwork simplifies the process of making client and server applications by abstracting most network code(event handlers, serialization, encryption, etc.). It is very unit test friendly.
 
 ### Why
 When working with Socket code directly or most other network libraries, code can quickly become messy and
- contain too much boilerplate code which makes it harder to read and therefore much harder to maintain
+ contain too much boilerplate code which makes it harder to read and therefore much harder to maintain.
  
  
  ### Quick start
