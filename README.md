@@ -43,16 +43,29 @@ public class ExampleEventHandler
 ```
 #### Client init example
 ```csharp
-new ConnectionBuilder()
+IConnection client = new ConnectionBuilder()
     .AddEventHandler(new ExampleEventHandler())
     .CreateClient("127.0.0.1", 25000);
+    
+client.OnConnect((c)=>{Console.WriteLine("Lambda: Client connected")});
+client.OnCommand<MessageObject>((c, m)=>{Console.WriteLine("Lambda received message: "+m.Content)});
+
+client.Start();
 ```
 
 #### Server init example
 ```csharp
-var listener = new ConnectionBuilder()
+IConnectionListener listener = new ConnectionBuilder()
     .AddEventHandler(new ExampleEventHandler())
     .CreateServer(25000);
+    
+listener.OnInboundConnection((c)=>
+{
+    c.OnConnect((c)=>Console.WriteLine("[Server]Lambda: Client Connected!"););
+    c.OnDisconnect((c)=>Console.WriteLine("[Server]Lambda: Client disconnected!"););
+});
+
+listener.Start();
 ```
 #### Default serialization
 EasyNetwork uses the easy built-in way of serializing objects.
