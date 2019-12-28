@@ -32,23 +32,19 @@ namespace EasyNetwork.Network
         }
 
         /// <summary>
-        /// Creates and starts a new client connection which connects to the given ip and port.
+        /// Creates a new client connection which connects to the given ip and port.
         /// </summary>
         public IObjectConnection CreateClient(string ip, int port)
         {
-            var connection = new SecureTcpConnectionProvider { Manager = GetManager(), DataFormatters= DataFormatters }.Create(ip, port);
-            connection.Start(); 
-            return connection;
+            return new SecureTcpConnectionProvider { Manager = GetManager(), DataFormatters= DataFormatters }.Create(ip, port);
         }
 
         /// <summary>
-        /// Creates and Starts a new <see cref="IConnectionListener"/> which listens on the given port.
+        /// Creates a new <see cref="IConnectionListener"/> which listens on the given port.
         /// </summary>
         public IConnectionListener CreateServer(int port)
         {
-            var connectionListener = new SecureTcpConnectionListener(port) { Manager = GetManager(), DataFormatters = DataFormatters };
-            connectionListener.Start();
-            return connectionListener;
+            return new SecureTcpConnectionListener(port) { Manager = GetManager(), DataFormatters = DataFormatters };
         }
 
         private IEventManager GetManager()
