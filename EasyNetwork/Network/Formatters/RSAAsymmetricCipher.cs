@@ -8,11 +8,11 @@ namespace EasyNetwork.Network.Formatters
 {
     public class RSAAsymmetricCipher : IAsymmetricCipher
     {
-        private RSA cipher;
+        private RSACryptoServiceProvider cipher;
 
         public RSAAsymmetricCipher()
         {
-            cipher = RSA.Create();
+            cipher = new RSACryptoServiceProvider(2048);
         }
 
         public byte[] PublicKey
@@ -23,12 +23,12 @@ namespace EasyNetwork.Network.Formatters
 
         public byte[] Decrypt(byte[] data)
         {
-            return cipher.Decrypt(data, RSAEncryptionPadding.OaepSHA512);
+            return cipher.Decrypt(data, true);
         }
 
         public byte[] Encrypt(byte[] data)
         {
-            return cipher.Encrypt(data, RSAEncryptionPadding.OaepSHA512);
+            return cipher.Encrypt(data, true);
         }
     }
 }
