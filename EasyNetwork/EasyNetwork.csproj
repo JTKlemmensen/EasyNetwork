@@ -3,21 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Jonas T. Klemmensen</Authors>
-    <Description>Network library that simplifies networking to using a few attributes. It takes care of serialization and encryption.</Description>
+    <Description>EasyNetwork simplifies the process of making client and server applications by abstracting most network code(event handlers, serialization, encryption, etc.). It is very unit test friendly.</Description>
     <PackageTags>Network, Tcp, Encryption, Serialization, Events, RSA, AES</PackageTags>
     <PackageProjectUrl>https://github.com/JTKlemmensen/EasyNetwork</PackageProjectUrl>
     <PackageIcon>EasyNetwork Icon.png</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/JTKlemmensen/EasyNetwork</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- IEventFilter now takes an IObjectConnection parameter
-- Improved IdleChecker
-- Added some documentation to ConnectionBuilder</PackageReleaseNotes>
+    <PackageReleaseNotes>- Now supports lambda event subscription
+- Added SendObject which waits for a response</PackageReleaseNotes>
     <PackageLicenseFile>README.md</PackageLicenseFile>
     <PackageLicenseExpression></PackageLicenseExpression>
     <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <PackageId>EasyNetwork</PackageId>
     <Product>EasyNetwork</Product>
   </PropertyGroup>

@@ -25,12 +25,23 @@ namespace EasyNetwork.Sample
                 .AddEventHandler(new IdleChecker())
                 .CreateClient("127.0.0.1", 25000);
 
-            client.OnConnect(c => { Console.WriteLine("Lambda Client Connected"); });
+            client.OnConnect(async c => 
+            {
+                var result = await c.SendObject<string>("1 2 3");
+                Console.WriteLine("Test: "+ result); 
+            });
+
             client.OnDisconnect(c => { Console.WriteLine("Lambda Client Disconnected"); });
             client.OnCommand<string>((c, s) => Console.WriteLine("Lambda Client received: "+s));
+            
             client.Start();
             Thread.Sleep(1000);
-            client.SendObject("Hello and welcome client!");
+            //client.SendObject("Hello and welcome client!");
+        }
+
+        static async Task<string> Send(string s)
+        {
+            return await Task<string>.Run(async () => { await Task.Delay(5000); return "response"; });
         }
 
         static void RunServer()
@@ -39,6 +50,11 @@ namespace EasyNetwork.Sample
                 .AddEventHandler(new ServerHandler())
                 .AddEventHandler(new IdleChecker())
                 .CreateServer(25000);
+
+            listener.OnInboundConnection += (c) =>
+            {
+                c.OnConnect(c2 => Console.WriteLine("Server Lambda: a client connected"));
+            };
 
             listener.Start();
         }
@@ -57,7 +73,7 @@ namespace EasyNetwork.Sample
         {
             Console.WriteLine("[Client] Received message: " + message);
             //connection.SendObject("Hello server");
-            connection.Stop();
+            //connection.Stop();
         }
         
         [Disconnect]

@@ -5,7 +5,7 @@ using System.Text;
 namespace EasyNetwork.Network.Abstract
 {
     /// <summary>
-    /// Base class for SecureClientConnection & SecureServerConnection. 
+    /// Base class for <see cref="SecureClientConnection"/> & <see cref="SecureServerConnection"/>. 
     /// Encrypts outgoing messages and decrypts incoming messages
     /// </summary>
     public abstract class SecureConnection : IConnection

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EasyNetwork.Network
 {
@@ -67,7 +68,7 @@ namespace EasyNetwork.Network
                 }
         }
 
-        public void SendObject<T>(T t)
+        public void SendObject(object t)
         {
             var message = new NetworkMessage { Name= t.GetType().FullName, Data = Serializer.Serialize(t) };
             connection.SendData(Serializer.Serialize(message));
@@ -118,6 +119,31 @@ namespace EasyNetwork.Network
         public void OnDisconnect(Action<IObjectConnection> disconnect)
         {
             Disconnect = new ConnectLink { Action = disconnect, Next = Disconnect };
+        }
+
+        public async Task<E> SendObject<E>(object t)
+        {
+            E output = default;
+            bool isDone = false;
+
+            OnCommand<E>((o, e) => 
+            {
+                output = e;
+                isDone = true;
+            });
+
+            SendObject(t);
+            return await Task<E>.Run(async () =>
+            {
+                while (true)
+                {
+                    if (isDone)
+                        break;
+                    await Task.Delay(50);
+                }
+
+                return output;
+            });
         }
 
         private class CommandLink
