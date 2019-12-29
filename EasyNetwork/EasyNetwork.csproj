@@ -10,13 +10,12 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/JTKlemmensen/EasyNetwork</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Now supports lambda event subscription
-- Added SendObject which waits for a response</PackageReleaseNotes>
-    <PackageLicenseFile>README.md</PackageLicenseFile>
+    <PackageReleaseNotes>- Fixed rsa, now works on both core and framework</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageLicenseExpression></PackageLicenseExpression>
     <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <PackageId>EasyNetwork</PackageId>
     <Product>EasyNetwork</Product>
   </PropertyGroup>
@@ -30,7 +29,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

@@ -120,7 +120,7 @@ namespace EasyNetwork.Test
             //Act
             objectConnection.SendObject(data);
 
-            mockSerializer.Verify(m => m.Serialize(data), Times.Once);
+            mockSerializer.Verify(m => m.Serialize((object)data), Times.Once);
             mockSerializer.Verify(m => m.Serialize(It.IsAny<NetworkMessage>()), Times.Once);
             mockConnection.Verify(m => m.SendData(It.IsAny<byte[]>()), Times.Once);
         }

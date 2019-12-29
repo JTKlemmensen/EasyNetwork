@@ -22,37 +22,37 @@ namespace EasyNetwork.Test
             public bool HasBadOnCommandBeenCalled { get; private set; }
 
             [Connect]
-            public void OnConnect(DefaultObjectConnection con)
+            public void OnConnect(IObjectConnection con)
             {
                 HasOnConnectBeenCalled = true;
             }
 
             [Connect]
-            public void BadOnConnect(DefaultObjectConnection con, string data)
+            public void BadOnConnect(IObjectConnection con, string data)
             {
                 HasBadOnConnectBeenCalled = true;
             }
 
             [Disconnect]
-            public void OnDisconnect(DefaultObjectConnection con)
+            public void OnDisconnect(IObjectConnection con)
             {
                 HasOnDisconnectBeenCalled = true;
             }
 
             [Disconnect]
-            public void BadOnDisconnect(DefaultObjectConnection con, int data)
+            public void BadOnDisconnect(IObjectConnection con, int data)
             {
                 HasBadOnDisconnectBeenCalled = true;
             }
 
             [Command]
-            public void OnCommand(DefaultObjectConnection con, string connection)
+            public void OnCommand(IObjectConnection con, string connection)
             {
                 HasOnCommandBeenCalled = true;
             }
 
             [Command]
-            public void BadOnCommand(string connection, DefaultObjectConnection con)
+            public void BadOnCommand(string connection, IObjectConnection con)
             {
                 HasBadOnCommandBeenCalled = true;
             }
