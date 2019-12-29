@@ -15,6 +15,12 @@ namespace EasyNetwork.Network
         private IDictionary<string, CommandLink> Commands = new Dictionary<string, CommandLink>();
         private ConnectLink Connect = null;
         private ConnectLink Disconnect = null;
+
+        private readonly object connectLock = new object();
+        private readonly object disconnectLock = new object();
+        private readonly object commandsLock = new object();
+
+
         private IConnection connection;
         public IEventManager Manager { get; set; }
         public ISerializer Serializer { get; set; }
@@ -60,12 +66,13 @@ namespace EasyNetwork.Network
 
         private void RunCommands(string name, byte[] data)
         {
-            if(Commands.TryGetValue(name, out CommandLink link))
-                while(link != null)
-                {
-                    link.Action.Invoke(data);
-                    link = link.Next;
-                }
+            lock (commandsLock)
+                if (Commands.TryGetValue(name, out CommandLink link))
+                    while (link != null)
+                    {
+                        link.Action.Invoke(data);
+                        link = link.Next;
+                    }
         }
 
         public void SendObject(object t)
@@ -97,28 +104,35 @@ namespace EasyNetwork.Network
 
         public void OnCommand<T>(Action<IObjectConnection, T> command)
         {
-            Action<byte[]> del = (data) => 
+            lock (commandsLock)
             {
-                var serializedData = Serializer.Deserialize<T>(data);
-                command.Invoke(this, serializedData);
-            };
+                Action<byte[]> del = (data) =>
+                {
+                    var serializedData = Serializer.Deserialize<T>(data);
+                    command.Invoke(this, serializedData);
+                };
 
-            var name = typeof(T).FullName;
+                var name = typeof(T).FullName;
 
-            if (Commands.ContainsKey(name))
-                Commands[name] = new CommandLink {Action=del, Next=Commands[name] };
-            else
-                Commands[name] = new CommandLink { Action = del, Next =null };
+                CommandLink nextCommand = null;
+
+                if (Commands.ContainsKey(name))
+                    nextCommand = Commands[name];
+
+                Commands[name] = new CommandLink { Creator = command, Action = del, Next = nextCommand };
+            }
         }
 
         public void OnConnect(Action<IObjectConnection> connect)
         {
-            Connect = new ConnectLink { Action = connect, Next = Connect };
+            lock(connectLock)
+                Connect = new ConnectLink { Action = connect, Next = Connect };
         }
 
         public void OnDisconnect(Action<IObjectConnection> disconnect)
         {
-            Disconnect = new ConnectLink { Action = disconnect, Next = Disconnect };
+            lock (disconnectLock)
+                Disconnect = new ConnectLink { Action = disconnect, Next = Disconnect };
         }
 
         public async Task<E> SendObject<E>(object t)
@@ -150,12 +164,14 @@ namespace EasyNetwork.Network
         {
             public Action<byte[]> Action { get; set; }
             public CommandLink Next { get; set; }
+            public object Creator { get; set; }
         }
 
         private class ConnectLink
         {
             public Action<IObjectConnection> Action { get; set; }
             public ConnectLink Next { get; set; }
+            public object Creator { get; set; }
         }
     }
 }
