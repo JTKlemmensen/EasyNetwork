@@ -1,7 +1,10 @@
 ﻿using EasyNetwork.Network.Abstract;
+using EasyNetwork.Network.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,22 +49,34 @@ namespace EasyNetwork.Network
 
         private void RunConnects()
         {
-            foreach (var e in ConnectEvents)
+            ConnectEvent[] events = null;
+            lock (connectLock)
+                events = ConnectEvents.ToArray();
+
+            foreach (var e in events)
                 e.Action.Invoke(this);
         }
 
         private void RunDisconnects()
         {
-            foreach (var e in DisconnectEvents)
+            ConnectEvent[] events = null;
+            lock (disconnectLock)
+                events = DisconnectEvents.ToArray();
+
+            foreach (var e in events)
                 e.Action.Invoke(this);
         }
 
         private void RunCommands(string name, byte[] data)
         {
+            CommandEvent[] events = null;
             lock (commandsLock)
-                if (CommandEvents.TryGetValue(name, out List<CommandEvent> events))
-                    foreach(var e in events)
-                        e.Action.Invoke(data);
+                if(CommandEvents.ContainsKey(name))
+                    events = CommandEvents[name].ToArray();
+
+            if (events != null)
+                for (int i = 0; i < events.Length; i++)
+                    events[i].Action.Invoke(data);
         }
 
         public void SendObject(object obj)
@@ -114,15 +129,19 @@ namespace EasyNetwork.Network
         {
             if (creator != null)
                 lock (commandsLock)
+                {
                     if (CommandEvents.TryGetValue(typeof(T).FullName, out List<CommandEvent> es))
                         es.RemoveAll(p => p.Creator == creator);
+                }
         }
         public void RemoveOnCommand(object creator)
         {
-            if(creator != null)
+            if (creator != null)
                 lock (commandsLock)
+                {
                     foreach (var pair in CommandEvents)
                         pair.Value.RemoveAll(p => p.Creator == creator);
+                }
         }
 
         public void RemoveOnConnect(object creator)
@@ -156,11 +175,13 @@ namespace EasyNetwork.Network
             E output = default;
             bool isDone = false;
 
-            OnCommand<E>((o, e) => 
+            Action<IObjectConnection,E> del = (o, e) =>
             {
                 output = e;
                 isDone = true;
-            });
+            };
+
+            OnCommand<E>(del);
 
             SendObject(t);
             return await Task<E>.Run(async () =>
@@ -169,11 +190,93 @@ namespace EasyNetwork.Network
                 {
                     if (isDone)
                         break;
-                    await Task.Delay(50);
+                    await Task.Delay(5);
                 }
-
+                RemoveOnCommand(del);
                 return output;
             });
+        }
+
+        public void AddEventHandler(object handler, IEventFilter filter = null)
+        {
+            Type commandHandlerType = handler.GetType();
+            MethodInfo[] methods = commandHandlerType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var method in methods)
+            {
+                var connectAttr = method.GetCustomAttribute(typeof(Connect));
+                var disconnectAttr = method.GetCustomAttribute(typeof(Disconnect));
+                var commandAttr = method.GetCustomAttribute(typeof(Command));
+
+                if (connectAttr != null)
+                    AddConnectHandlerWithAttribute(handler, filter, method);
+                if (disconnectAttr != null)
+                    AddDisconnectHandlerWithAttribute(handler, filter, method);
+                if (commandAttr != null)
+                    AddCommandHandlerWithAttribute(handler, filter, method);
+            }
+        }
+
+        /// <summary>
+        /// Service method for AddEventHandler. Adds a method with a connect attribute as connect eventhandler.
+        /// </summary>
+        private void AddDisconnectHandlerWithAttribute(object handler, IEventFilter filter, MethodInfo method)
+        {
+            var methodParameters = method.GetParameters();
+            if (methodParameters.Length != 1 || methodParameters[0].ParameterType != typeof(IObjectConnection))
+                return;
+
+            var exp = Expression.GetActionType(typeof(IObjectConnection));
+
+            var delegat = method.CreateDelegate(exp, handler);
+
+            typeof(IObjectConnection)
+            .GetMethod("OnDisconnect")
+            .Invoke(this, new object[] { delegat, null });
+        }
+
+            /// <summary>
+            /// Service method for AddEventHandler. Adds a method with a connect attribute as connect eventhandler.
+            /// </summary>
+            private void AddConnectHandlerWithAttribute(object handler, IEventFilter filter, MethodInfo method)
+        {
+            var methodParameters = method.GetParameters();
+            if (methodParameters.Length != 1 || methodParameters[0].ParameterType != typeof(IObjectConnection))
+                return;
+
+            var exp = Expression.GetActionType(typeof(IObjectConnection));
+
+            var delegat = method.CreateDelegate(exp, handler);
+
+            typeof(IObjectConnection)
+            .GetMethod("OnConnect")
+            .Invoke(this, new object[] { delegat, null });
+        }
+
+        /// <summary>
+        /// Service method for AddEventHandler. Adds a method with a command attribute as command eventhandler.
+        /// </summary>
+        private void AddCommandHandlerWithAttribute(object handler, IEventFilter filter, MethodInfo method)
+        {
+            var methodParameters = method.GetParameters();
+            if (methodParameters.Length != 2 || methodParameters[0].ParameterType != typeof(IObjectConnection))
+                return;
+
+            var parameter1 = methodParameters[1].ParameterType;
+            var exp = Expression.GetActionType(typeof(IObjectConnection), parameter1);
+
+            var delegat = method.CreateDelegate(exp, handler);
+
+            typeof(IObjectConnection)
+            .GetMethod("OnCommand")
+            .MakeGenericMethod(typeof(string))
+            .Invoke(this, new object[] { delegat, null });
+        }
+
+        public void RemoveEventHandlers(object creator)
+        {
+            RemoveOnCommand(creator);
+            RemoveOnConnect(creator);
+            RemoveOnDisconnect(creator);
         }
 
         private class CommandEvent
