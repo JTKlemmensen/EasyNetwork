@@ -12,6 +12,7 @@ namespace EasyNetwork.Network
     /// Using Reflection, objects are serialized and then all methods subscribed to the serialized object
     /// will be called
     /// </summary>
+    [ObsoleteAttribute("Is no longer used by DefaultObjectConnection.", false)]
     public class ReflectionEventManager : IEventManager
     {
         private Dictionary<string, CommandEventObject> CommandObjects { get; } = new Dictionary<string, CommandEventObject>();

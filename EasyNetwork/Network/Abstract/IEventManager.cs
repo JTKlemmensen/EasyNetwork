@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EasyNetwork.Network.Abstract
 {
+    [ObsoleteAttribute("Is no longer used by DefaultObjectConnection.", false)]
     public interface IEventManager
     {
         void AddCommandHandler(object commandHandler, IEventFilter filter = null);

@@ -16,15 +16,13 @@ namespace EasyNetwork.Test
         {
             var mockSerializer = new Mock<ISerializer>();
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Start();
             mockConnection.Raise(m => m.OnConnected += null);
 
-            mockEventManager.Verify(m => m.CallConnect(objectConnection), Times.Once);
             mockConnection.Verify(m => m.Start(), Times.Once);
         }
 
@@ -33,16 +31,14 @@ namespace EasyNetwork.Test
         {
             var mockSerializer = new Mock<ISerializer>();
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Start();
             objectConnection.Start();
             mockConnection.Raise(m => m.OnConnected += null);
 
-            mockEventManager.Verify(m => m.CallConnect(objectConnection), Times.Once);
             mockConnection.Verify(m => m.Start(), Times.Once);
         }
 
@@ -51,9 +47,8 @@ namespace EasyNetwork.Test
         {
             var mockSerializer = new Mock<ISerializer>();
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
@@ -62,7 +57,6 @@ namespace EasyNetwork.Test
 
             mockConnection.Raise(m => m.OnDisconnected += null);
 
-            mockEventManager.Verify(m => m.CallDisconnect(objectConnection), Times.Once);
             mockConnection.Verify(m => m.Stop(), Times.Once);
             mockConnection.Verify(m => m.Start(), Times.Never);
         }
@@ -72,15 +66,13 @@ namespace EasyNetwork.Test
         {
             var mockSerializer = new Mock<ISerializer>();
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
             mockConnection.Raise(m => m.OnDisconnected += null);
 
-            mockEventManager.Verify(m => m.CallDisconnect(objectConnection), Times.Once);
             mockConnection.Verify(m => m.Stop(), Times.Once);
         }
 
@@ -89,16 +81,14 @@ namespace EasyNetwork.Test
         {
             var mockSerializer = new Mock<ISerializer>();
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.Stop();
             objectConnection.Stop();
             mockConnection.Raise(m => m.OnDisconnected += null);
 
-            mockEventManager.Verify(m => m.CallDisconnect(objectConnection), Times.Once);
             mockConnection.Verify(m => m.Stop(), Times.Once);
         }
 
@@ -114,9 +104,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Serialize("System.String")).Returns(serializedType);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
 
             //Act
             objectConnection.SendObject(data);
@@ -124,25 +113,6 @@ namespace EasyNetwork.Test
             mockSerializer.Verify(m => m.Serialize((object)data), Times.Once);
             mockSerializer.Verify(m => m.Serialize(It.IsAny<NetworkMessage>()), Times.Once);
             mockConnection.Verify(m => m.SendData(It.IsAny<byte[]>()), Times.Once);
-        }
-
-        [Test]
-        public void Test_ReceiveData()
-        {
-            byte[] serializedData = new byte[] { 1, 2, 3 };
-            byte[] serializedMessage = new byte[] { 1, 2, 3, 4 };
-            var mockSerializer = new Mock<ISerializer>();
-            mockSerializer.Setup(m => m.Deserialize<NetworkMessage>(serializedMessage)).Returns(new NetworkMessage { Data = serializedData, Name = "typeName" });
-
-            var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
-
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
-
-            //Act
-            mockConnection.Raise(m => m.OnDataReceived += null, serializedMessage);
-
-            mockEventManager.Verify(m => m.CallCommand("typeName", serializedData, objectConnection));
         }
 
         [Test]
@@ -158,9 +128,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
 
             //Act
@@ -183,9 +152,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
 
             //Act
@@ -208,9 +176,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
 
             //Act
@@ -233,9 +200,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
             objectConnection.RemoveEventHandlers(testHandler);
 
@@ -258,9 +224,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
             objectConnection.RemoveEventHandlers(testHandler);
 
@@ -283,9 +248,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             objectConnection.AddEventHandler(testHandler);
             objectConnection.RemoveEventHandlers(testHandler);
 
@@ -308,9 +272,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             objectConnection.OnCommand<string>((c, s) => OnCommandHasBeenCalled = true);
 
@@ -333,9 +296,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             objectConnection.OnConnect((c) => OnCommandHasBeenCalled = true);
 
@@ -358,9 +320,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             objectConnection.OnDisconnect((c) => OnCommandHasBeenCalled = true);
 
@@ -383,9 +344,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection, string> del = (c, s) => OnCommandHasBeenCalled = true;
             objectConnection.OnCommand<string>(del);
@@ -410,9 +370,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             objectConnection.OnConnect(del);
@@ -437,9 +396,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             objectConnection.OnDisconnect(del);
@@ -464,9 +422,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection, string> del = (c, s) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
@@ -492,9 +449,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection, string> del = (c, s) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
@@ -520,9 +476,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
@@ -548,9 +503,8 @@ namespace EasyNetwork.Test
             mockSerializer.Setup(m => m.Deserialize<string>(serializedData)).Returns(unserializedData);
 
             var mockConnection = new Mock<IConnection>();
-            var mockEventManager = new Mock<IEventManager>();
 
-            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Manager = mockEventManager.Object, Serializer = mockSerializer.Object };
+            var objectConnection = new DefaultObjectConnection(mockConnection.Object) { Serializer = mockSerializer.Object };
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";

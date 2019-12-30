@@ -23,9 +23,7 @@ namespace EasyNetwork.Network
         private readonly object disconnectLock = new object();
         private readonly object commandsLock = new object();
 
-
         private IConnection connection;
-        public IEventManager Manager { get; set; }
         public ISerializer Serializer { get; set; }
         private bool hasBeenStarted;
         private bool hasBeenStopped;
@@ -44,7 +42,6 @@ namespace EasyNetwork.Network
         {
             var message = Serializer.Deserialize<NetworkMessage>(data);
             RunCommands(message.Name, message.Data);
-            Manager.CallCommand(message.Name, message.Data, this);
         }
 
         private void RunConnects()
@@ -92,7 +89,6 @@ namespace EasyNetwork.Network
 
             hasBeenStopped = true;
             hasBeenStarted = true;
-            connection.OnDisconnected += () => Manager.CallDisconnect(this);
             connection.Stop();
         }
 
@@ -102,7 +98,6 @@ namespace EasyNetwork.Network
                 return;
 
             hasBeenStarted = true;
-            connection.OnConnected += () => Manager.CallConnect(this);
             connection.Start();
         }
 
@@ -134,6 +129,7 @@ namespace EasyNetwork.Network
                         es.RemoveAll(p => p.Creator == creator);
                 }
         }
+
         public void RemoveOnCommand(object creator)
         {
             if (creator != null)

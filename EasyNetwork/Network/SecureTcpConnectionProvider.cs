@@ -9,7 +9,6 @@ namespace EasyNetwork.Network
 {
     public class SecureTcpConnectionProvider : IConnectionProvider
     {
-        public IEventManager Manager { get; set; }
         public IDataFormatters DataFormatters { get; set; }
 
         public IObjectConnection Create(string ip, int port)
@@ -28,16 +27,13 @@ namespace EasyNetwork.Network
             };
 
             var secureConnection = new SecureClientConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
-            var objectConnection = new DefaultObjectConnection(secureConnection) {Manager = Manager, Serializer = DataFormatters.Serializer };
+            var objectConnection = new DefaultObjectConnection(secureConnection) { Serializer = DataFormatters.Serializer };
 
             return objectConnection;
         }
 
         private void ValidateProperties()
         {
-            if (Manager == null)
-                throw new Exception("The EventManager cannot be null");
-
             if (DataFormatters == null)
                 throw new Exception("The DataFormatters cannot be null");
 

@@ -11,7 +11,6 @@ namespace EasyNetwork.Network
     public class SecureTcpConnectionListener : IConnectionListener
     {
         private int port;
-        public IEventManager Manager { get; set; }
         public IDataFormatters DataFormatters { get; set; }
         private bool run;
 
@@ -44,7 +43,7 @@ namespace EasyNetwork.Network
                 {
                     GetSocket getSocket = () => listener.AcceptSocket();
                     var secureConnection = new SecureServerConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
-                    var objectConnection = new DefaultObjectConnection(secureConnection) { Manager = Manager, Serializer = DataFormatters.Serializer };
+                    var objectConnection = new DefaultObjectConnection(secureConnection) { Serializer = DataFormatters.Serializer };
                     OnInboundConnection?.Invoke(objectConnection);
                     objectConnection.Start();
                 }
@@ -52,9 +51,6 @@ namespace EasyNetwork.Network
 
         private void ValidateProperties()
         {
-            if (Manager == null)
-                throw new Exception("The EventManager cannot be null");
-
             if (DataFormatters == null)
                 throw new Exception("The DataFormatters cannot be null");
 
