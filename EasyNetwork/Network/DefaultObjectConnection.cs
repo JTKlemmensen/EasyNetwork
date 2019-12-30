@@ -231,13 +231,13 @@ namespace EasyNetwork.Network
 
             typeof(IObjectConnection)
             .GetMethod("OnDisconnect")
-            .Invoke(this, new object[] { delegat, null });
+            .Invoke(this, new object[] { delegat, handler });
         }
 
-            /// <summary>
-            /// Service method for AddEventHandler. Adds a method with a connect attribute as connect eventhandler.
-            /// </summary>
-            private void AddConnectHandlerWithAttribute(object handler, IEventFilter filter, MethodInfo method)
+        /// <summary>
+        /// Service method for AddEventHandler. Adds a method with a connect attribute as connect eventhandler.
+        /// </summary>
+        private void AddConnectHandlerWithAttribute(object handler, IEventFilter filter, MethodInfo method)
         {
             var methodParameters = method.GetParameters();
             if (methodParameters.Length != 1 || methodParameters[0].ParameterType != typeof(IObjectConnection))
@@ -249,7 +249,7 @@ namespace EasyNetwork.Network
 
             typeof(IObjectConnection)
             .GetMethod("OnConnect")
-            .Invoke(this, new object[] { delegat, null });
+            .Invoke(this, new object[] { delegat, handler });
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace EasyNetwork.Network
             typeof(IObjectConnection)
             .GetMethod("OnCommand")
             .MakeGenericMethod(typeof(string))
-            .Invoke(this, new object[] { delegat, null });
+            .Invoke(this, new object[] { delegat, handler });
         }
 
         public void RemoveEventHandlers(object creator)
