@@ -44,24 +44,23 @@ public class ExampleEventHandler
 #### Client init example
 ```csharp
 IConnection client = new ConnectionBuilder()
-    .AddEventHandler(new ExampleEventHandler())
     .CreateClient("127.0.0.1", 25000);
     
 client.OnConnect((c)=>Console.WriteLine("Lambda: Client connected"););
 client.OnCommand<MessageObject>((c, m)=>Console.WriteLine("Lambda received message: "+m.Content););
-
+client.AddEventHandler(new ExampleEventHandler());
 client.Start();
 ```
 
 #### Server init example
 ```csharp
 IConnectionListener listener = new ConnectionBuilder()
-    .AddEventHandler(new ExampleEventHandler())
     .CreateServer(25000);
     
 listener.OnInboundConnection((c)=>
 {
     c.OnConnect((c)=>Console.WriteLine("[Server]Lambda: Client Connected!"););
+    c.AddEventHandler(new ExampleEventHandler());
     c.OnDisconnect((c)=>Console.WriteLine("[Server]Lambda: Client disconnected!"););
 });
 
