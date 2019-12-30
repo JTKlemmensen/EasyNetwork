@@ -2,6 +2,13 @@
 using EasyNetwork.Network.Abstract;
 using EasyNetwork.Network.Attributes;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,8 +18,13 @@ namespace EasyNetwork.Sample
     {
         static void Main(string[] args)
         {
+            RunTestChat();
+        }
+
+        static void RunTestChat()
+        {
             Task.Run(RunServer);
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             Task.Run(RunClient);
 
             Thread.Sleep(25000);
@@ -20,40 +32,48 @@ namespace EasyNetwork.Sample
 
         static void RunClient()
         {
+            Console.WriteLine("RunClient");
             var client = new ConnectionBuilder()
-                .AddEventHandler(new ClientHandler())
-                .AddEventHandler(new IdleChecker())
                 .CreateClient("127.0.0.1", 25000);
 
-            client.OnConnect(async c => 
+            client.AddEventHandler(new IdleChecker());
+            client.OnConnect(c =>
             {
-                var result = await c.SendObject<string>("1 2 3");
-                Console.WriteLine("Test: "+ result); 
+                Console.WriteLine("Lambda client connected");
             });
 
-            client.OnDisconnect(c => { Console.WriteLine("Lambda Client Disconnected"); });
-            client.OnCommand<string>((c, s) => Console.WriteLine("Lambda Client received: "+s));
             
-            client.Start();
-            Thread.Sleep(1000);
-            //client.SendObject("Hello and welcome client!");
-        }
+            client.OnDisconnect(c => 
+            {
+                Console.WriteLine("Lambda Client Disconnected");
+            });
 
-        static async Task<string> Send(string s)
-        {
-            return await Task<string>.Run(async () => { await Task.Delay(5000); return "response"; });
+            object creator = new object();
+            client.OnCommand<string>((c, s) => 
+            {
+                Console.WriteLine("Lambda Client received: " + s);
+                client.RemoveOnCommand(creator);
+                client.SendObject("I just removed command eventhandler!");
+            }, creator);
+            
+            client.AddEventHandler(new ClientHandler());
+            client.Start();
         }
 
         static void RunServer()
         {
             var listener = new ConnectionBuilder()
-                .AddEventHandler(new ServerHandler())
-                .AddEventHandler(new IdleChecker())
                 .CreateServer(25000);
 
             listener.OnInboundConnection += (c) =>
             {
-                c.OnConnect(c2 => Console.WriteLine("Server Lambda: a client connected"));
+                c.OnConnect(c2 => 
+                {
+                    Console.WriteLine("Server Lambda: a client connected");
+                    c2.AddEventHandler(new ServerHandler());
+                    c2.AddEventHandler(new IdleChecker());
+                    c2.SendObject("hello");
+                });
             };
 
             listener.Start();
@@ -65,17 +85,15 @@ namespace EasyNetwork.Sample
         [Connect]
         public void OnConnect(IObjectConnection connection)
         {
-            Console.WriteLine("[Client] Connected");
+            Console.WriteLine("[Client] OnConnect SDAConnected");
         }
-        
+
         [Command]
         public void OnMessage(IObjectConnection connection, string message)
         {
             Console.WriteLine("[Client] Received message: " + message);
-            //connection.SendObject("Hello server");
-            //connection.Stop();
         }
-        
+
         [Disconnect]
         public void OnDisconnect(IObjectConnection connection)
         {
@@ -96,12 +114,13 @@ namespace EasyNetwork.Sample
         {
             Console.WriteLine("[Server] Received message: " + message);
             connection.SendObject("Hello client");
+            connection.Stop();
         }
 
         [Disconnect]
         public void OnDisconnect(IObjectConnection connection)
         {
-            Console.WriteLine("[Server] A Client disconnected");
+            Console.WriteLine("[Server] Disconnected");
         }
     }
 }

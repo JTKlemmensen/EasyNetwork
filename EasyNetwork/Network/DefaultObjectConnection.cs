@@ -264,7 +264,7 @@ namespace EasyNetwork.Network
 
             typeof(IObjectConnection)
             .GetMethod("OnCommand")
-            .MakeGenericMethod(typeof(string))
+            .MakeGenericMethod(parameter1)
             .Invoke(this, new object[] { delegat, handler });
         }
 
