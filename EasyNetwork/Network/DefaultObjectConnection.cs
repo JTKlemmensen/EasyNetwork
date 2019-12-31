@@ -15,7 +15,7 @@ namespace EasyNetwork.Network
     /// </summary>
     public class DefaultObjectConnection : IObjectConnection
     {
-        private IDictionary<string, List<CommandEvent>> CommandEvents = new Dictionary<string, List<CommandEvent>>();
+        private IDictionary<string, IEventList> CommandEvents = new Dictionary<string, IEventList>();
         private List<ConnectEvent> ConnectEvents = new List<ConnectEvent>();
         private List<ConnectEvent> DisconnectEvents = new List<ConnectEvent>();
 
@@ -66,14 +66,15 @@ namespace EasyNetwork.Network
 
         private void RunCommands(string name, byte[] data)
         {
-            CommandEvent[] events = null;
+            IEventList eventList = null;
             lock (commandsLock)
-                if(CommandEvents.ContainsKey(name))
-                    events = CommandEvents[name].ToArray();
+                if (CommandEvents.ContainsKey(name))
+                {
+                    eventList = CommandEvents[name];
+                    eventList.Prepare();
+                }
 
-            if (events != null)
-                for (int i = 0; i < events.Length; i++)
-                    events[i].Action.Invoke(data);
+            eventList?.Invoke(data);
         }
 
         public void SendObject(object obj)
@@ -105,18 +106,23 @@ namespace EasyNetwork.Network
         {
             lock (commandsLock)
             {
-                Action<byte[]> del = (data) =>
-                {
-                    var serializedData = Serializer.Deserialize<T>(data);
-                    command.Invoke(this, serializedData);
-                };
+                Action<T> del = (data) => command.Invoke(this, data);;
+
+                Func<byte[], T> aa = (data) => Serializer.Deserialize<T>(data);
 
                 var name = typeof(T).FullName;
+                EventList<T> eventList = null;
 
-                if (!CommandEvents.ContainsKey(name))
-                    CommandEvents[name] = new List<CommandEvent>();
+                if (CommandEvents.ContainsKey(name))
+                    eventList = CommandEvents[name] as EventList<T>;
+                else
+                {
+                    eventList = new EventList<T>();
+                    CommandEvents[name] = eventList;
+                    eventList.Deserialize = (data) => Serializer.Deserialize<T>(data);
+                }
 
-                CommandEvents[name].Add(new CommandEvent { Creator = creator ?? command, Action = del });
+                eventList.Add(new CommandEvent<T> { Creator = creator ?? command, Action = del });
             }
         }
 
@@ -125,8 +131,8 @@ namespace EasyNetwork.Network
             if (creator != null)
                 lock (commandsLock)
                 {
-                    if (CommandEvents.TryGetValue(typeof(T).FullName, out List<CommandEvent> es))
-                        es.RemoveAll(p => p.Creator == creator);
+                    if (CommandEvents.TryGetValue(typeof(T).FullName, out IEventList es))
+                        es.RemoveAll(creator);
                 }
         }
 
@@ -136,7 +142,7 @@ namespace EasyNetwork.Network
                 lock (commandsLock)
                 {
                     foreach (var pair in CommandEvents)
-                        pair.Value.RemoveAll(p => p.Creator == creator);
+                        pair.Value.RemoveAll(creator);
                 }
         }
 
@@ -259,7 +265,6 @@ namespace EasyNetwork.Network
 
             var parameter1 = methodParameters[1].ParameterType;
             var exp = Expression.GetActionType(typeof(IObjectConnection), parameter1);
-
             var delegat = method.CreateDelegate(exp, handler);
 
             typeof(IObjectConnection)
@@ -275,16 +280,57 @@ namespace EasyNetwork.Network
             RemoveOnDisconnect(creator);
         }
 
-        private class CommandEvent
+        private class CommandEvent<T> : BaseEvent
         {
-            public Action<byte[]> Action { get; set; }
+            public Action<T> Action { get; set; }
+        }
+
+        private class ConnectEvent : BaseEvent
+        {
+            public Action<IObjectConnection> Action { get; set; }
+        }
+
+        private abstract class BaseEvent
+        {
             public object Creator { get; set; }
         }
 
-        private class ConnectEvent
+        private class EventList<E> : IEventList
         {
-            public Action<IObjectConnection> Action { get; set; }
-            public object Creator { get; set; }
+            private List<CommandEvent<E>> Events { get; set; } = new List<CommandEvent<E>>();
+            private CommandEvent<E>[] threadSafeArray;
+            public Func<byte[],E> Deserialize { get; set; }
+
+            public void Invoke(byte[] data)
+            {
+                E deserializedObj = Deserialize.Invoke(data);
+
+                if (threadSafeArray != null)
+                    for (int i = 0; i < threadSafeArray.Length; i++)
+                        threadSafeArray[i].Action.Invoke(deserializedObj);
+            }
+
+            public void Prepare()
+            {
+                threadSafeArray = Events.ToArray();
+            }
+
+            public void RemoveAll(object creator)
+            {
+                Events.RemoveAll((e) => e.Creator == creator);
+            }
+
+            public void Add(CommandEvent<E> commandEvent)
+            {
+                Events.Add(commandEvent);
+            }
+        }
+
+        private interface IEventList
+        {
+            void Prepare();
+            void Invoke(byte[] data);
+            void RemoveAll(object creator);
         }
     }
 }
