@@ -106,10 +106,6 @@ namespace EasyNetwork.Network
         {
             lock (commandsLock)
             {
-                Action<T> del = (data) => command.Invoke(this, data);;
-
-                Func<byte[], T> aa = (data) => Serializer.Deserialize<T>(data);
-
                 var name = typeof(T).FullName;
                 EventList<T> eventList = null;
 
@@ -122,6 +118,7 @@ namespace EasyNetwork.Network
                     eventList.Deserialize = (data) => Serializer.Deserialize<T>(data);
                 }
 
+                Action<T> del = (data) => command.Invoke(this, data);
                 eventList.Add(new CommandEvent<T> { Creator = creator ?? command, Action = del });
             }
         }
@@ -303,11 +300,13 @@ namespace EasyNetwork.Network
 
             public void Invoke(byte[] data)
             {
+                if (threadSafeArray == null)
+                    return;
+
                 E deserializedObj = Deserialize.Invoke(data);
 
-                if (threadSafeArray != null)
-                    for (int i = 0; i < threadSafeArray.Length; i++)
-                        threadSafeArray[i].Action.Invoke(deserializedObj);
+                for (int i = 0; i < threadSafeArray.Length; i++)
+                    threadSafeArray[i].Action.Invoke(deserializedObj);
             }
 
             public void Prepare()
