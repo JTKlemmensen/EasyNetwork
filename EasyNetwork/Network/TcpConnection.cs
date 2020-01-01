@@ -38,12 +38,13 @@ namespace EasyNetwork.Network
         {
             if (writer != null && stop != true && data != null)
                 lock (writeLock)
-                {
-                    writer.Write(data.Length);
-                    writer.Write(data);
-
-                    writer.Flush();
-                }
+                    try
+                    {
+                        writer.Write(data.Length);
+                        writer.Write(data);
+                        writer.Flush();
+                    }
+                    catch (Exception){ }
         }
 
         public void Stop()
