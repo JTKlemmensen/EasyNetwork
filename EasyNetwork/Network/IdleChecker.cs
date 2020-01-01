@@ -22,18 +22,27 @@ namespace EasyNetwork.Network
         private IDictionary<IObjectConnection, IdleInfo> Connections = new ConcurrentDictionary<IObjectConnection, IdleInfo>();
         private const long TicksPerMillisecond = 10000;
         private const long MillisecondPerSecond = 1000;
-        private const long MaxConnectionIdle = 3 * TicksPerMillisecond * MillisecondPerSecond;
-        private const long IdleCheckerCooldown = 1 * TicksPerMillisecond * MillisecondPerSecond;
+        /// <summary>
+        /// Allowed delay in Ticks between sending out a ping and receing a pong from the remote peer
+        /// </summary>
+        private long MaxIdleDelay { get; set; }
+        /// <summary>
+        /// Delay in Ticks between receiving a pong and sending out a new ping
+        /// </summary>
+        private long IdleCheckerCooldown { get; set; }
         private const int RefreshRate = 50;
         private bool run;
 
-        public IdleChecker()
+        public IdleChecker(int maxConnectionIdle = 3, int idleCooldown = 1)
         {
+            MaxIdleDelay = maxConnectionIdle * TicksPerMillisecond * MillisecondPerSecond;
+            IdleCheckerCooldown = idleCooldown * TicksPerMillisecond * MillisecondPerSecond;
+
             run = true;
             new Task(Run, TaskCreationOptions.LongRunning).Start();
         }
 
-        private void Run()
+        private async void Run()
         {
             while(run)
             {
@@ -48,10 +57,10 @@ namespace EasyNetwork.Network
                             c.Value.HasPonged = false;
                         }
                     }
-                    else if (time - c.Value.LastTicks > MaxConnectionIdle)
+                    else if (time - c.Value.LastTicks > MaxIdleDelay)
                         c.Key.Stop();
 
-                Thread.Sleep(RefreshRate);
+                await Task.Delay(RefreshRate);
             }
         }
 
