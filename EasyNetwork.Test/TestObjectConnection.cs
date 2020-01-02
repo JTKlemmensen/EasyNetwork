@@ -427,7 +427,7 @@ namespace EasyNetwork.Test
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection, string> del = (c, s) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
-            objectConnection.OnCommand<string>(del, creator);
+            objectConnection.OnCommand<string>(del, creator:creator);
             objectConnection.RemoveOnCommand<string>(creator);
 
             //Act
@@ -454,7 +454,7 @@ namespace EasyNetwork.Test
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection, string> del = (c, s) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
-            objectConnection.OnCommand<string>(del, creator);
+            objectConnection.OnCommand<string>(del, creator: creator);
             objectConnection.RemoveOnCommand(creator);
 
             //Act
@@ -481,7 +481,7 @@ namespace EasyNetwork.Test
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
-            objectConnection.OnConnect(del,creator);
+            objectConnection.OnConnect(del, creator: creator);
             objectConnection.RemoveOnConnect(creator);
 
             //Act
@@ -508,7 +508,7 @@ namespace EasyNetwork.Test
             bool OnCommandHasBeenCalled = false;
             Action<IObjectConnection> del = (c) => OnCommandHasBeenCalled = true;
             string creator = "CreatorObject :)";
-            objectConnection.OnDisconnect(del, creator);
+            objectConnection.OnDisconnect(del, creator: creator);
             objectConnection.RemoveOnDisconnect(creator);
 
             //Act

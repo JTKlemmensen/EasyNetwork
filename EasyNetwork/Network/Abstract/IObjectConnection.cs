@@ -56,19 +56,19 @@ namespace EasyNetwork.Network.Abstract
         /// Add an eventhandler which will be called when an object of type T is received.
         /// Creator is used when removing the event. If the creator is null, the command is used as creator.
         /// </summary>
-        void OnCommand<T>(Action<IObjectConnection, T> command, object creator = null);
+        void OnCommand<T>(Action<IObjectConnection, T> command, Func<IObjectConnection, bool> canRun=null, object creator = null);
 
         /// <summary>
         /// Add an eventhandler which will be called when the connection has succesfully been established to the remote peer.
         /// Creator is used when removing the event. If the creator is null, the command is used as creator.
         /// </summary>
-        void OnConnect(Action<IObjectConnection> connect, object creator = null);
+        void OnConnect(Action<IObjectConnection> connect, Func<IObjectConnection, bool> canRun = null, object creator = null);
 
         /// <summary>
         /// Add an eventhandler which will be called when <see cref="Stop"/> has been called and the connection no longer listens for incoming data.
         /// Creator is used when removing the event. If the creator is null, the command is used as creator.
         /// </summary>
-        void OnDisconnect(Action<IObjectConnection> disconnect, object creator = null);
+        void OnDisconnect(Action<IObjectConnection> disconnect, Func<IObjectConnection, bool> canRun = null, object creator = null);
 
         /// <summary>
         /// Removes all command eventhandlers that has the given creator object.

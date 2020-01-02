@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EasyNetwork\EasyNetwork.csproj" />
+    <ProjectReference Include="..\..\..\EasyNetwork\EasyNetwork.csproj" />
     <ProjectReference Include="..\TicTacToeEntities\TicTacToeEntities.csproj" />
   </ItemGroup>
 

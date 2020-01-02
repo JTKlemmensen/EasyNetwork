@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyNetwork.Test", "EasyNet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyNetwork", "EasyNetwork\EasyNetwork.csproj", "{96B65ED4-C920-4761-A7C6-1BFA6318A6DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyNetwork.Sample", "EasyNetwork.Sample\EasyNetwork.Sample.csproj", "{1592D5C9-2CCF-41FB-AE97-43C088BE4257}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{47DDC513-91FD-447A-8528-622F42E87B9C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatServer", "Samples\Chat\SampleServer\ChatServer.csproj", "{E2256BCE-C524-4A7D-8798-F9D5EB19C13A}"
@@ -21,11 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chat", "Chat", "{2D2194E5-D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TicTacToe", "TicTacToe", "{BDC2B1FA-AF4C-4A22-88C4-A9E9FF06FDA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeServer", "Samples\TicTacToe\TicTacToeServer\TicTacToeServer.csproj", "{E9766672-2246-4696-BD2A-CBB9259CB8A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeServer", "Samples\TicTacToe\TicTacToeServer\TicTacToeServer.csproj", "{E9766672-2246-4696-BD2A-CBB9259CB8A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeClient", "Samples\TicTacToe\TicTacToeClient\TicTacToeClient.csproj", "{32B96810-63CE-4A3A-BC87-256E2DA795A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeClient", "Samples\TicTacToe\TicTacToeClient\TicTacToeClient.csproj", "{32B96810-63CE-4A3A-BC87-256E2DA795A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeEntities", "Samples\TicTacToe\TicTacToeEntities\TicTacToeEntities.csproj", "{9795FA65-161B-4D9E-A1C7-39F540DD8D6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicTacToeEntities", "Samples\TicTacToe\TicTacToeEntities\TicTacToeEntities.csproj", "{9795FA65-161B-4D9E-A1C7-39F540DD8D6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{96B65ED4-C920-4761-A7C6-1BFA6318A6DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96B65ED4-C920-4761-A7C6-1BFA6318A6DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96B65ED4-C920-4761-A7C6-1BFA6318A6DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1592D5C9-2CCF-41FB-AE97-43C088BE4257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1592D5C9-2CCF-41FB-AE97-43C088BE4257}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1592D5C9-2CCF-41FB-AE97-43C088BE4257}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1592D5C9-2CCF-41FB-AE97-43C088BE4257}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E2256BCE-C524-4A7D-8798-F9D5EB19C13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E2256BCE-C524-4A7D-8798-F9D5EB19C13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2256BCE-C524-4A7D-8798-F9D5EB19C13A}.Release|Any CPU.ActiveCfg = Release|Any CPU

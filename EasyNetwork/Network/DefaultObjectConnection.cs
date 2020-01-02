@@ -53,7 +53,8 @@ namespace EasyNetwork.Network
                 events = ConnectEvents.ToArray();
 
             foreach (var e in events)
-                e.Action.Invoke(this);
+                if (e.CanRun(this))
+                    e.Action.Invoke(this);
         }
 
         private void RunDisconnects()
@@ -64,7 +65,8 @@ namespace EasyNetwork.Network
                 events = DisconnectEvents.ToArray();
 
             foreach (var e in events)
-                e.Action.Invoke(this);
+                if(e.CanRun(this))
+                    e.Action.Invoke(this);
         }
 
         private void RunCommands(string name, byte[] data)
@@ -118,7 +120,7 @@ namespace EasyNetwork.Network
             return Task.Run(init);
         }
 
-        public void OnCommand<T>(Action<IObjectConnection, T> command, object creator = null)
+        public void OnCommand<T>(Action<IObjectConnection, T> command, Func<IObjectConnection, bool> canRun = null, object creator = null)
         {
             lock (commandsLock)
             {
@@ -134,8 +136,18 @@ namespace EasyNetwork.Network
                     eventList.Deserialize = (data) => Serializer.Deserialize<T>(data);
                 }
 
-                Action<T> del = (data) => command.Invoke(this, data);
-                eventList.Add(new CommandEvent<T> { Creator = creator ?? command, Action = del });
+                Action<T> del = (data) =>
+                {
+                    if(canRun.Invoke(this))
+                        command.Invoke(this, data);
+                };
+
+                eventList.Add(new CommandEvent<T> 
+                {
+                    Creator = creator ?? command,
+                    CanRun = canRun,
+                    Action = del,
+                });
             }
         }
 
@@ -173,33 +185,43 @@ namespace EasyNetwork.Network
                     DisconnectEvents.RemoveAll(p => p.Creator == creator);
         }
 
-        public void OnConnect(Action<IObjectConnection> connect, object creator = null)
+        public void OnConnect(Action<IObjectConnection> connect, Func<IObjectConnection, bool> canRun = null, object creator = null)
         {
             lock(connectLock)
-                ConnectEvents.Add(new ConnectEvent { Action = connect, Creator=creator ?? connect});
+                ConnectEvents.Add(new ConnectEvent 
+                {
+                    Action = connect, 
+                    CanRun = canRun, 
+                    Creator = creator ?? connect
+                });
         }
 
-        public void OnDisconnect(Action<IObjectConnection> disconnect, object creator = null)
+        public void OnDisconnect(Action<IObjectConnection> disconnect, Func<IObjectConnection, bool> canRun = null, object creator = null)
         {
             lock (disconnectLock)
-                DisconnectEvents.Add(new ConnectEvent { Action = disconnect, Creator= creator ?? disconnect});
+                DisconnectEvents.Add(new ConnectEvent 
+                {
+                    Action = disconnect, 
+                    CanRun = canRun,
+                    Creator= creator ?? disconnect
+                });
         }
 
-        public async Task<E> SendObject<E>(object t)
+        public async Task<ReturnObject> SendObject<ReturnObject>(object t)
         {
-            E output = default;
+            ReturnObject output = default;
             bool isDone = false;
 
-            Action<IObjectConnection,E> del = (o, e) =>
+            Action<IObjectConnection,ReturnObject> del = (o, e) =>
             {
                 output = e;
                 isDone = true;
             };
 
-            OnCommand<E>(del);
+            OnCommand<ReturnObject>(del);
 
             SendObject(t);
-            return await Task<E>.Run(async () =>
+            return await Task<ReturnObject>.Run(async () =>
             {
                 while (true)
                 {
