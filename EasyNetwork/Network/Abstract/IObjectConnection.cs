@@ -11,6 +11,8 @@ namespace EasyNetwork.Network.Abstract
     /// </summary>
     public interface IObjectConnection
     {
+        bool IsStopped { get; }
+
         /// <summary>
         /// Returns the ip of the remote peer
         /// </summary>
@@ -31,7 +33,7 @@ namespace EasyNetwork.Network.Abstract
         /// Establishes the connection to the remote peer.
         /// When the connection has been established, OnConnect events will be called and data can be received and sent.
         /// </summary>
-        void Start();
+        Task Start();
 
         /// <summary>
         /// Stops the connection and will no longer listen for incoming data or be able to send data to the remote peer.

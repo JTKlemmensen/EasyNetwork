@@ -10,7 +10,7 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/JTKlemmensen/EasyNetwork</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- Fixed rsa, now works on both core and framework</PackageReleaseNotes>
+    <PackageReleaseNotes>- Can now remove event handlers</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageLicenseExpression></PackageLicenseExpression>
     <Copyright>Copyright © 2019 Jonas T. Klemmensen</Copyright>

@@ -36,15 +36,13 @@ namespace EasyNetwork.Network
 
         public void SendData(byte[] data)
         {
-            if (writer != null && stop != true && data != null)
+            if (writer != null && stop != true && data != null && socket.Connected)
                 lock (writeLock)
-                    try
-                    {
-                        writer.Write(data.Length);
-                        writer.Write(data);
-                        writer.Flush();
-                    }
-                    catch (Exception){ }
+                {
+                    writer.Write(data.Length);
+                    writer.Write(data);
+                    writer.Flush();
+                }
         }
 
         public void Stop()

@@ -32,7 +32,7 @@ namespace EasyNetwork.Network
             run = false;
         }
 
-        private void Run()
+        private async Task Run()
         {
             ValidateProperties();
 
@@ -45,7 +45,7 @@ namespace EasyNetwork.Network
                     var secureConnection = new SecureServerConnection(new TcpConnection(getSocket), DataFormatters.AsymmetricCipher, DataFormatters.SymmetricCipher);
                     var objectConnection = new DefaultObjectConnection(secureConnection) { Serializer = DataFormatters.Serializer };
                     OnInboundConnection?.Invoke(objectConnection);
-                    objectConnection.Start();
+                    await objectConnection.Start();
                 }
         }
 

@@ -30,6 +30,8 @@ namespace EasyNetwork.Network
 
         public string Ip => connection.Ip;
 
+        public bool IsStopped { get; set; }
+
         public DefaultObjectConnection(IConnection connection)
         {
             this.connection = connection;
@@ -56,6 +58,7 @@ namespace EasyNetwork.Network
 
         private void RunDisconnects()
         {
+            IsStopped = true;
             ConnectEvent[] events = null;
             lock (disconnectLock)
                 events = DisconnectEvents.ToArray();
@@ -93,13 +96,26 @@ namespace EasyNetwork.Network
             connection.Stop();
         }
 
-        public void Start()
+        public Task Start()
         {
             if (hasBeenStarted)
-                return;
+                return Task.CompletedTask;
+            bool connectionEstablished = false;
+            Action init = () => 
+            {
+                while (true) 
+                { 
+                    Task.Delay(25); 
+                    if (connectionEstablished) 
+                        break;
+                } 
+            };
 
+            connection.OnConnected += () => connectionEstablished = true;
             hasBeenStarted = true;
             connection.Start();
+
+            return Task.Run(init);
         }
 
         public void OnCommand<T>(Action<IObjectConnection, T> command, object creator = null)
@@ -290,6 +306,8 @@ namespace EasyNetwork.Network
         private abstract class BaseEvent
         {
             public object Creator { get; set; }
+            public Func<IObjectConnection, bool> CanRun { get; set; }
+
         }
 
         private class EventList<E> : IEventList
