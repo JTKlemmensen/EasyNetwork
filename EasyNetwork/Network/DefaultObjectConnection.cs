@@ -54,7 +54,7 @@ namespace EasyNetwork.Network
 
             foreach (var e in events)
                 if (e.CanRun(this))
-                    e.Action.Invoke(this);
+                    e.Action(this);
         }
 
         private void RunDisconnects()
@@ -136,6 +136,9 @@ namespace EasyNetwork.Network
                     eventList.Deserialize = (data) => Serializer.Deserialize<T>(data);
                 }
 
+                if (canRun == null)
+                    canRun = (c) => true;
+
                 Action<T> del = (data) =>
                 {
                     if(canRun.Invoke(this))
@@ -191,7 +194,7 @@ namespace EasyNetwork.Network
                 ConnectEvents.Add(new ConnectEvent 
                 {
                     Action = connect, 
-                    CanRun = canRun, 
+                    CanRun = canRun ?? ((c) => true), 
                     Creator = creator ?? connect
                 });
         }
@@ -202,7 +205,7 @@ namespace EasyNetwork.Network
                 DisconnectEvents.Add(new ConnectEvent 
                 {
                     Action = disconnect, 
-                    CanRun = canRun,
+                    CanRun = canRun ?? ((c) => true),
                     Creator= creator ?? disconnect
                 });
         }
@@ -268,7 +271,7 @@ namespace EasyNetwork.Network
 
             typeof(IObjectConnection)
             .GetMethod("OnDisconnect")
-            .Invoke(this, new object[] { delegat, handler });
+            .Invoke(this, new object[] { delegat, filter?.GenerateFunc(method) ?? null, handler });
         }
 
         /// <summary>
@@ -286,7 +289,7 @@ namespace EasyNetwork.Network
 
             typeof(IObjectConnection)
             .GetMethod("OnConnect")
-            .Invoke(this, new object[] { delegat, handler });
+            .Invoke(this, new object[] { delegat, filter?.GenerateFunc(method) ?? null, handler });
         }
 
         /// <summary>
@@ -305,7 +308,7 @@ namespace EasyNetwork.Network
             typeof(IObjectConnection)
             .GetMethod("OnCommand")
             .MakeGenericMethod(parameter1)
-            .Invoke(this, new object[] { delegat, handler });
+            .Invoke(this, new object[] { delegat, filter?.GenerateFunc(method) ?? null, handler });
         }
 
         public void RemoveEventHandlers(object creator)
